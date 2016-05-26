@@ -1,0 +1,4 @@
+*.o
+searchPagerank
+pagerank
+inverted
