@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "set.h"
+#include "Header/set.h"
 
 #define strEQ(s,t) (strcmp((s),(t)) == 0)
 #define strLT(s,t) (strcmp((s),(t)) < 0)
@@ -14,16 +14,26 @@ typedef struct Node *Link;
 
 typedef struct Node {
 	char *val;
+	char **vertex;
 	Link  next;
 } Node;
 	
 typedef struct SetRep {
 	int   nelems;
+	int   arraylen;
 	Link  elems;
 } SetRep;
 
 // Function signatures
-static Link newNode(char *);
+
+Set newSet();
+void disposeSet(Set);
+void insertInto(Set,char *,int);
+void dropFrom(Set,char *);
+int  isElem(Set,char *);
+int  nElems(Set);
+
+static Link newNode(char *, int);
 static void disposeNode(Link);
 static int  findNode(Link,char *,Link *,Link *);
 
@@ -35,19 +45,9 @@ Set newSet()
 	Set new = malloc(sizeof(SetRep));
 	assert(new != NULL);
 	new->nelems = 0;
+	new->arraylen = 0;
 	new->elems = NULL;
 	return new;
-}
-
-char *indexElement(Set s, int n){
-	if (n > (s->nelems - 1)) return NULL;
-	int i;
-	Link temp = s->elems;
-	for(i = 0; i < n; i++){
-		temp = temp->next;
-	}
-	char *retStr = strdup(temp->val);
-	return retStr;
 }
 
 // disposeSet(Set)
@@ -66,14 +66,15 @@ void disposeSet(Set s)
 
 // insertInto(Set,Str)
 // - ensure that Str is in Set
-void insertInto(Set s, char *str)
+void insertInto(Set s, char *str, int max)
 {
 	assert(s != NULL);
 	Link curr, prev;
-	
 	int found = findNode(s->elems,str,&curr,&prev);
 	if (found) return; // already in Set
-	Link new = newNode(str);
+	Link new = newNode(str, max);
+	s->arraylen = max;
+	
 	s->nelems++;
 	if (prev == NULL) {
 		// add at start of list of elems
@@ -85,6 +86,41 @@ void insertInto(Set s, char *str)
 		new->next = prev->next;
 		prev->next = new;
 	}
+}
+
+void insertIntoNode(Set s, char *str, char *url) {
+	Link curr, prev;
+	int found = findNode(s->elems,str,&curr,&prev);
+	if(!found) { return; } //not found
+	
+	int i;
+	for (i = 0; i < s->arraylen; i++) {
+		if (curr->vertex[i] != NULL) {
+			if (!strcmp(curr->vertex[i], url)) { return; }
+			else continue;
+		}
+		else if (curr->vertex[i] == NULL) {
+			curr->vertex[i] = malloc(sizeof(char) * strlen(url));
+			strcpy(curr->vertex[i], url);
+			//printf( "Successful.\n" );
+			return;
+		}
+	}
+	
+}
+
+char ** getArrayOfNode(Set s, char *str) {
+	Link curr, prev;
+	int found = findNode(s->elems, str, &curr, &prev);
+	if(!found) { printf("Node %s Not Found.", str); return NULL; }
+	char **copy = malloc(s->arraylen*sizeof(char*));
+	int i;
+	for (i = 0; curr->vertex[i] != NULL; i++) {
+		copy[i] = strdup(curr->vertex[i]);
+		//copy[i] = malloc( (1+strlen(curr->vertex[i])) * sizeof(char));
+		//strcpy(copy[i], curr->vertex[i]);
+	}
+	return copy;
 }
 
 // dropFrom(Set,Str)
@@ -107,13 +143,9 @@ void dropFrom(Set s, char *str)
 // - check whether Str is contained in Set
 int isElem(Set s, char *str)
 {
-	char *nstr;
-	Link curr = NULL, prev = NULL;
-	nstr = strdup(str);
 	assert(s != NULL);
-	int retVal = findNode(s->elems,nstr,&curr,&prev);
-	free(nstr);
-	return retVal;
+	Link curr, prev;
+	return findNode(s->elems,str,&curr,&prev);
 }
 
 // nElems(Set)
@@ -124,41 +156,80 @@ int  nElems(Set s)
 	return s->nelems;
 }
 
+//returns max size of array
+int  nArraylen(Set s)
+{
+	assert(s != NULL);
+	return s->arraylen;
+}
+
 // showSet(Set)
 // - display Set (for debugging)
-void showSet(Set s)
-{	
-	if (s == NULL || s->nelems ==0 ) return;
+void showSet(Set s, FILE *fp)
+{
 	Link curr;
-	/*if (s->nelems == 0)
+	if (s->nelems == 0)
 		printf("Set is empty\n");
-	else {*/
-		//printf("Set has %d elements:\n",s->nelems);
+	else {
+		fprintf(fp, "\nSet has %d elements:\n",s->nelems);
 		int id = 0;
 		curr = s->elems;
 		while (curr != NULL) {
-			//printf("[%03d] %s\n", id, curr->val);
-			printf("'%s'@%p - ", curr->val, curr->val);
+			fprintf(fp, "\t%s\t", curr->val);
+			int i;
+			for (i = 0; curr->vertex[i] != NULL; i++)
+				fprintf(fp, "%s\t", curr->vertex[i]);
+			fprintf(fp, "\n");
 			id++;
 			curr = curr->next;
 		}
-	//}
+	}
+}
+
+
+// char ** getElements(Set)
+// Stores all the elements in an array and return the array
+char ** getElements(Set s) 
+{
+	int i = 0;
+	char **elements = malloc(sizeof(char*) * nElems(s));
+	Link curr = s->elems;
+
+	while( curr != NULL) {
+		int len = strlen(curr->val);
+		(elements)[i] = malloc(len+1);					//insert url to array
+		strcpy((elements)[i], curr->val);
+		curr = curr->next;
+		i++;
+	}
+
+	return elements;
 }
 
 // Helper functions
 
-static Link newNode(char *str)
+static Link newNode(char *str, int max)
 {
 	Link new = malloc(sizeof(Node));
 	assert(new != NULL);
 	new->val = strdup(str);
 	new->next = NULL;
+	new->vertex = malloc(max*sizeof(char *));
+	int i;
+	for (i = 0; i < max; i++)
+		new->vertex[i] = NULL;
 	return new;
 }
+
 
 static void disposeNode(Link curr)
 {
 	assert(curr != NULL);
+	int i;
+	for (i = 0; curr->vertex[i]!=NULL; i++) {
+		free(curr->vertex[i]);
+	}
+	free(curr->vertex);
 	free(curr->val);
 	free(curr);
 }
@@ -171,16 +242,12 @@ static void disposeNode(Link curr)
 static int findNode(Link list, char *str, Link *cur, Link *pre)
 {
 	Link curr = list, prev = NULL;
-	//char nstr[999];
-	//strcpy(nstr, str);
-	while ((curr != NULL) && (strcmp(curr->val, str) < 0)) {
+	while (curr != NULL && strLT(curr->val,str)) {
 		prev = curr;
 		curr = curr->next;
 	}
 	*cur = curr; *pre = prev;
-	int result = (curr != NULL && strEQ(str, curr->val));
-	//free(nstr);
-	
-	//printf("%i", result);
-	return result;
+	return (curr != NULL && strEQ(str,curr->val));
 }
+
+

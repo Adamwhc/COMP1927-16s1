@@ -5,35 +5,28 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "graph.h"
+#include "Header/graph.h"
 
 #define strEQ(g,t) (strcmp((g),(t)) == 0)
-
-typedef struct node *vnode;
-struct node { 
-  int val; 
-  vnode next; 
-} node;
 
 typedef struct GraphRep {
 	int   nV;
 	int   maxV;
-	char **vertices; //array of vertices
-	vnode *adj;	 //array of linked list connections
+	char  **vertex;
+	int   **edges;
 } GraphRep;
 
 // Function signatures
 
 Graph newGraph();
-void  disposeList(vnode n);
 void  disposeGraph(Graph);
-int   addEdge(Graph, char *, char *);     
+int   addEdge(Graph,char *,char *, int);
 int   nVertices(Graph);
-int   nEdges(Graph, int);
 int   isConnected(Graph, char *, char *);
 void  showGraph(Graph,int);
-int   vertexID(Graph, char *);
-int   addVertex(Graph, char *);
+
+static int vertexID(char *, char **, int);
+int addVertex(char *, char **, int);
 
 // newGraph()
 // - create an initially empty Graph
@@ -41,21 +34,19 @@ Graph newGraph(int maxV)
 {
 	Graph new = malloc(sizeof(GraphRep));
 	assert(new != NULL);
-	int i;
+	int i, j;
 	new->nV = 0;
 	new->maxV = maxV;
-	//new->vertex = malloc(maxV*sizeof(char *));
-	//assert(new->vertex != NULL);
-	new->vertices = malloc(maxV * sizeof(char*));
-	new->adj = malloc(sizeof(node) * maxV);
-	assert(new->adj != NULL);
+	new->vertex = malloc(maxV*sizeof(char *));
+	assert(new->vertex != NULL);
+	new->edges = malloc(maxV*sizeof(int *));
+	assert(new->edges != NULL);
 	for (i = 0; i < maxV; i++) {
-		new->vertices[i] = NULL;
-		new->adj[i] = NULL;
-	//	new->edges[i] = malloc(maxV*sizeof(Num));
-	//	assert(new->edges[i] != NULL);
-	//	for (j = 0; j < maxV; j++)
-	//		new->edges[i][j] = 0;
+		new->vertex[i] = NULL;
+		new->edges[i] = malloc(maxV*sizeof(int));
+		assert(new->edges[i] != NULL);
+		for (j = 0; j < maxV; j++)
+			new->edges[i][j] = 0;
 	}
 	return new;
 }
@@ -64,23 +55,16 @@ Graph newGraph(int maxV)
 // - clean up memory associated with Graph
 void disposeGraph(Graph g)
 {
-      if (g == NULL) return;
+	if (g == NULL) return;
 	int i;
+	for (i = 0; i < g->nV; i++) {
+		free(g->vertex[i]);
+	}
 	for (i = 0; i < g->maxV; i++) {
-	    if (g->adj[i] == NULL) continue;
-	    disposeList(g->adj[i]);
-    	}
-    	for (i = 0; i < g->nV; i++)
-    		free(g->vertices[i]);
-    	free(g->adj);
-    	free(g->vertices);
-    	free(g);
-}
-
-void disposeList(vnode n){
-	if (n == NULL) return;
-	disposeList(n->next);
-	free(n);
+		free(g->edges[i]);
+	}
+	free(g->edges);
+	free(g->vertex);
 }
 
 // addEdge(Graph,Src,Dest)
@@ -88,39 +72,23 @@ void disposeList(vnode n){
 // - returns 1 if edge successfully added
 // - returns 0 if unable to add edge
 //   (usually because nV exceeds maxV)
-int addEdge(Graph g, char *src, char *dest)
+int addEdge(Graph g, char *src, char *dest, int weight)
 {
 	assert(g != NULL);
-	int v = vertexID(g, src);
-	if (v < 0) { //vertex doesn't exist
+	int v = vertexID(src,g->vertex,g->nV);
+	if (v < 0) {
 		if (g->nV >= g->maxV) return 0;
-		v = addVertex(g, src);
+		v = addVertex(src,g->vertex,g->nV);
 		g->nV++;
 	}
-	int w = vertexID(g, dest);
+	int w = vertexID(dest,g->vertex,g->nV);
 	if (w < 0) {
 		if (g->nV >= g->maxV) return 0;
-		w = addVertex(g, dest);
+		w = addVertex(dest,g->vertex,g->nV);
 		g->nV++;
 	}
-	
-	if (!isConnected(g, src, dest)){
-		vnode temp = g->adj[v];
-		vnode new = malloc(sizeof(node));
-		new->val = w;
-		new->next = NULL;
-		if (temp != NULL){
-			while(temp->next != NULL){
-				temp = temp->next;
-			}
-			temp->next = new;
-		}
-		else
-			g->adj[v] = new;
-		return 1;
-	} 
-	else
-		return 0;
+	g->edges[v][w] = weight;
+	return 1;
 }
 
 // isConnected(Graph,Src,Dest)
@@ -128,18 +96,12 @@ int addEdge(Graph g, char *src, char *dest)
 int isConnected(Graph g, char *src, char *dest)
 {
 	assert(g != NULL);
-	int v = vertexID(g, src);
-	int w = vertexID(g, dest);
+	int v = vertexID(src,g->vertex,g->nV);
+	int w = vertexID(dest,g->vertex,g->nV);
 	if (v < 0 || w < 0)
 		return 0;
-	else{
-		vnode temp = g->adj[v];
-		while(temp != NULL){
-			if(temp->val == w) return 1;
-			temp = temp->next;
-		}
-		return 0;
-	}
+	else
+		return g->edges[v][w];
 }
 
 // nVertices(Graph)
@@ -158,29 +120,23 @@ void showGraph(Graph g, int mode)
 	if (g->nV == 0)
 		printf("Graph is empty\n");
 	else {
-		printf("\nGraph has %d vertices:\n",g->nV);
-		int i;
-		if (mode == 0) {
+		printf("Graph has %d vertices:\n",g->nV);
+		int i, j;
+		if (mode == 1) {
 			for (i = 0; i < g->nV; i++) {
-				printf("%s:\t", g->vertices[i]);
-				vnode temp = g->adj[i];
-				while(temp != NULL){
-					printf("%s -> ", g->vertices[temp->val]);
-					temp = temp->next;
-				}
-				puts("null");
+				for (j = 0; j < g->nV; j++)
+					printf("%d",g->edges[i][j]);
+				putchar('\n');
 			}
 		}
 		else {
 			for (i = 0; i < g->nV; i++) {
-				/*printf("Vertex: %s\n", g->vertices[i]);
+				printf("Vertex: %s\n", g->vertex[i]);
 				printf("connects to\n");
 				for (j = 0; j < g->nV; j++) {
 					if (g->edges[i][j])
 						printf("   %s\n",g->vertex[j]);
-				}*/
-				if (g->adj[i] != NULL)
-					printf("%s=", g->vertices[g->adj[i]->val]);
+				}
 			}
 		}
 	}
@@ -191,37 +147,43 @@ void showGraph(Graph g, int mode)
 // vertexID(Str,Names,N)
 // - searches for Str in array of Names[N]
 // - returns index of Str if found, -1 if not
-int vertexID(Graph g, char *str)
+static int vertexID(char *str, char **names, int N)
 {
 	int i;
-	for (i = 0; i < g->nV; i++)
-		if (strEQ(str, g->vertices[i])) return i;
+	for (i = 0; i < N; i++)
+		if (strEQ(str,names[i])) return i;
 	return -1;
 }
 
-char *vIDName(Graph g, int i)
+char * vIDName(Graph g, int i)
 {
 	if (i > g->nV-1) return NULL;
-	else return g->vertices[i];
+	else return g->vertex[i];
 }
 
+// getRow(Graph, char *)
+// return the row associated to the second argument
+int * getRow(Graph g, char *str) {
+	int i;
+	for (i = 0; i < g->nV; i++)
+		if (strEQ(str,g->vertex[i])) break;
+	return (int *)g->edges[i];
+}
 int nEdges(Graph g, int i)
 {
 	if (i > g->nV-1) return 0;
-	int count = 0;
-	vnode temp = g->adj[i];
-	if (temp == NULL) return 0;
-	while (temp != NULL){
-		count++;
-		temp = temp->next;
+	int vertexNum, count = 0;
+	for (vertexNum = 0; vertexNum < g->nV; vertexNum++) {
+		if (i == vertexNum) continue; //ignore self links
+		if (g->edges[i][vertexNum] != 0) count++;
 	}
 	return count;
 }
 
 // addVertex(Str,Names,N)
 // - add Str at end of Names
-int addVertex(Graph g, char *str)
+int addVertex(char *str, char **names, int N)
 {
-	g->vertices[g->nV] = strdup(str);
-	return g->nV;
+	names[N] = strdup(str);
+	return N;
 }
