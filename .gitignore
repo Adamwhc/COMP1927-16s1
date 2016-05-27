@@ -1,11 +1,11 @@
 *.o
-.DS_Store
+bin/
 gmon.out
-invertedIndex.txt
-pagerankList.txt
-rankPagerank.txt
+*.txt
+!/files/*
 searchPagerank
 searchTfidf
 pagerank
 inverted
 scaledFootrule
+.DS_Store

@@ -13,15 +13,15 @@ void getCollection(Queue q){
     FILE *fp;
     Set s = newSet();
     fp = fopen("files/collection.txt", "r");
-    printf("Adding pages to graph...\n");
+    //printf("Adding pages to graph...\n");
     while(fscanf(fp, "%s", buff) > 0){
-        printf("\tAdded Page to Graph: %s\n", buff);
+        //printf("\tAdded Page to Graph: %s\n", buff);
 	    if (!isElem(s, buff)){ //ignore duplicate links
 		    enterQueue(q, buff);
-		    insertInto(s, buff);
+		    insertInto(s, buff, 0);
 	    } 
     }
-    disposeSet(s);
+    //disposeSet(s);
     fclose(fp);
 }
 
@@ -38,7 +38,7 @@ void getGraph(Graph g, Queue q){
        		fscanf(fp, "%s", buff);	        //store first word after header
        	fscanf(fp, "%s", buff);	
 	while(strcmp(buff, "#end") != 0){
-		addEdge(g, curFile, buff);
+		addEdge(g, curFile, buff, 0);
 		fscanf(fp, "%s", buff);
 	}
 	fclose(fp);

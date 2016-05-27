@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include "mergeSort.h"
 
-void mergesort(void *arr[], int lo, int hi, int size, int(*less)(const void*, const void*))
+void mergeSort(void *arr[], int lo, int hi, int size, int(*less)(const void*, const void*))
 {
     if (hi <= lo) return; // base case
     int mid = (lo+hi)/2; // mid point
-    mergesort(arr, lo, mid, size, less);
-    mergesort(arr, mid+1, hi, size, less);
+    mergeSort(arr, lo, mid, size, less);
+    mergeSort(arr, mid+1, hi, size, less);
     merge(arr, lo, mid, hi, size, less);
 }
 

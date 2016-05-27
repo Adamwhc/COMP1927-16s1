@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
-#include "Header/set.h"
+#include "set.h"
 
 static int usage(int);
 static int readRanks(char*, char***);

@@ -10,12 +10,11 @@ typedef struct GraphRep *Graph;
 
 Graph newGraph(int);
 void  disposeGraph(Graph);
-int   addEdge(Graph,char *,char *);
+int   addEdge(Graph,char *,char *, int);
 int   nVertices(Graph);
 int   isConnected(Graph, char *, char *);
 void  showGraph(Graph,int);
-char* vIDName(Graph, int);
-int   nEdges(Graph, int);
-
-
+char *vIDName(Graph, int);
+int * getRow(Graph, char *);
+int nEdges(Graph, int);
 #endif

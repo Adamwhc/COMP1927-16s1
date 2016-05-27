@@ -1,35 +1,24 @@
-# Makefile for COMP1917 15s2 Week 08 Lab
-
 CC=gcc
-CFLAGS=-Wall -Werror -g -pg
-LIBS=graph.o queue.o set.o
+CFLAGS=-Wall -Werror -gdwarf-2 -pg
+LIBS=graph.o queue.o set.o readData.o mergeSort.o BSTree.o
 
-
-all: 	inverted.o pagerank.o searchPagerank.o searchTfidf.o $(LIBS)
+all: 	inverted.o pagerank.o searchPagerank.o scaledFootrule.o $(LIBS)
 	$(CC) $(CFLAGS) -o pagerank pagerank.o $(LIBS) 
 	$(CC) $(CFLAGS) -o inverted inverted.o $(LIBS) 
 	$(CC) $(CFLAGS) -o searchPagerank searchPagerank.o $(LIBS) 
-	$(CC) $(CFLAGS) -o searchTfidf searchTfidf.o -lm $(LIBS)
-	mkdir -p bin/ && mv *.o bin/
-scaledFootrule:	scaledFootrule.o
 	$(CC) $(CFLAGS) -o scaledFootrule scaledFootrule.o $(LIBS)
-searchTfidf: searchTfidf.o $(LIBS)
-	gcc $(CFLAGS) -gdwarf-2 -o searchTfidf searchTfidf.o -lm $(LIBS)
-searchPagerank: searchPagerank.o $(LIBS)
-	gcc $(CFLAGS) -o searchPagerank searchPagerank.o $(LIBS)
-inverted : inverted.o $(LIBS)
-	gcc $(CFLAGS) -o inverted inverted.o $(LIBS)
-pagerank : pagerank.o $(LIBS)
-	gcc $(CFLAGS) -o pagerank pagerank.o $(LIBS)
 	mkdir -p bin/ && mv *.o bin/
-
-
-pagerank.o: pagerank.c
-inverted.o: inverted.c
-set.o : set.c Header/set.h
-queue.o : queue.c Header/queue.h
-graph.o : graph.c Header/graph.h
-
+	
+scaledFootrule.o : scaledFootrule.c	
+inverted.o : inverted.c
+pagerank.o : pagerank.c
+searchPagerank.o : searchPagerank.c
+BSTree.o : BSTree.c BSTree.h
+set.o : set.c set.h
+queue.o : queue.c queue.h
+graph.o : graph.c graph.h
+readData.o: readData.c readData.h
+mergeSort.o: mergeSort.c mergeSort.h
 
 clean :
-	rm -f inverted pagerank searchPagerank searchTfidf *.o core
+	rm -f pagerank inverted searchPagerank searchTfidf *.o core
