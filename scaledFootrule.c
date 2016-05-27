@@ -3,8 +3,12 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
-#include "set.h"
-
+#include "Header/set.h"
+/*
+**	TODO: Permutate the array
+**	
+**
+*/
 static int usage(int);
 static int readRanks(char*, char***);
 static void permute(int *, int, int);
@@ -130,7 +134,7 @@ static void permute(int *array,int i,int length) {
 	if (length == i){
 		int j;
 		for(j = 0; j < length; j++);
-			//printf("%d", (array)[j]);
+			//printf("%d", (array)[j]); 
 		//printf("\n");
 		return;
 	}

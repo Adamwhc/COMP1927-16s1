@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "graph.h"
+#include "Header/graph.h"
 
 #define strEQ(g,t) (strcmp((g),(t)) == 0)
 
@@ -18,7 +18,7 @@ typedef struct GraphRep {
 
 // Function signatures
 
-Graph newGraph(int);
+Graph newGraph();
 void  disposeGraph(Graph);
 int   addEdge(Graph,char *,char *, int);
 int   nVertices(Graph);

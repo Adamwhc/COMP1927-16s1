@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "queue.h"
+#include "Header/queue.h"
 
 typedef struct Node *Link;
 
@@ -15,12 +15,19 @@ typedef struct Node {
 } Node;
 	
 typedef struct QueueRep {
-    int size;
 	Link  front;
 	Link  back;
 } QueueRep;
 
 // Function signatures
+
+Queue newQueue();
+void disposeQueue(Queue);
+void enterQueue(Queue,char *);
+char *leaveQueue(Queue);
+int  emptyQueue(Queue);
+void showQueue(Queue q);
+
 static Link newNode(char *);
 static void disposeNode(Link);
 
@@ -41,13 +48,12 @@ Queue newQueue()
 void disposeQueue(Queue q)
 {
 	if (q == NULL) return;
-	Link next, curr = q->back;
+	Link next, curr = q->front;
 	while (curr != NULL) {
 		next = curr->next;
 		disposeNode(curr);	
 		curr = next;
 	}
-	free(q);
 }
 
 // enterQueue(Queue,Str)
@@ -62,7 +68,6 @@ void enterQueue(Queue q, char *str)
 		q->back->next = new;
 		q->back = new;
 	}
-	q->size++;
 }
 
 // leaveQueue(Queue)
@@ -76,7 +81,6 @@ char *leaveQueue(Queue q)
 	if (q->front == NULL)
 		q->back = NULL;
 	free(old);
-	q->size--;
 	return str;
 }
 
@@ -85,12 +89,6 @@ char *leaveQueue(Queue q)
 int emptyQueue(Queue q)
 {
 	return (q->front == NULL);
-}
-
-
-int queueSize(Queue q)
-{
-    return (q->size);
 }
 
 // showQueue(Queue)
@@ -129,3 +127,4 @@ static void disposeNode(Link curr)
 	free(curr->val);
 	free(curr);
 }
+

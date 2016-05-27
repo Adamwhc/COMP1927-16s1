@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "set.h"
+#include "Header/set.h"
 
 #define strEQ(s,t) (strcmp((s),(t)) == 0)
 #define strLT(s,t) (strcmp((s),(t)) < 0)
@@ -62,17 +62,6 @@ void disposeSet(Set s)
 		curr = next;
 	}
 	free(s);
-}
-
-char *indexElement(Set s, int n){
-	if (n > (s->nelems - 1)) return NULL;
-	int i;
-	Link temp = s->elems;
-	for(i = 0; i < n; i++){
-		temp = temp->next;
-	}
-	char *retStr = strdup(temp->val);
-	return retStr;
 }
 
 // insertInto(Set,Str)
@@ -260,4 +249,5 @@ static int findNode(Link list, char *str, Link *cur, Link *pre)
 	*cur = curr; *pre = prev;
 	return (curr != NULL && strEQ(str,curr->val));
 }
+
 
