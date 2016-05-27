@@ -4,9 +4,9 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
-#include "Header/queue.h"
-#include "Header/set.h"
-#include "Header/graph.h"
+#include "queue.h"
+#include "set.h"
+#include "graph.h"
 
 static void readThroughIndex(FILE *, Set, int);
 static int readThroughCollection(FILE *, char***);
