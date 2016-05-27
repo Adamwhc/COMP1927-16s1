@@ -8,5 +8,5 @@
     planet  volcano moon weather sun  
     mars man promise  
 
-#end Setion-2
+#end Section-2
 

@@ -16,12 +16,17 @@ static void populateGraph(Graph, char **, char **, int);
 static void strlower(char*);
 
 int main(int argc, char *argv[]) {
+	if(argc < 2){
+        printf("Usage: %s <Space separated kewords>\n", argv[0]);
+        exit(0);
+    }
+
 	FILE *files = fopen("files/collection.txt", "r");
 	char **allURLs;
 	int i, urlCount = readThroughCollection(files, &allURLs);
 	fclose(files);	
 
-	files = fopen("files/invertedIndex.txt", "r");
+	files = fopen("invertedIndex.txt", "r");
 	Set urlSet = newSet();
 	
 	

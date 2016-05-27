@@ -8,5 +8,5 @@
     planet  volcano moon weather 
     mars jupiter moon planets 
 
-#end Setion-2
+#end Section-2
 

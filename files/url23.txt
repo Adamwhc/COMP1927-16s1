@@ -10,5 +10,5 @@
     high winds  circle Mars moons waves  volcano  sun 
     light rays  
 
-#end Setion-2
+#end Section-2
 

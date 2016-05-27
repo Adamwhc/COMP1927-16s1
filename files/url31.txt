@@ -7,5 +7,5 @@
     Sun volcano moon weather cycles 
     light rays  
 
-#end Setion-2
+#end Section-2
 
