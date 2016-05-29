@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
        	 		pch = strtok (NULL, " \n");
   			while (pch != NULL)
  			{
- 				printf("FOUND: '%s'", pch);
+ 				//printf("FOUND: '%s'", pch);
  				insertInto(s[nSets], cleanString(pch), 0);
  				insertInto(allS, cleanString(pch), 0);
     				pch = strtok (NULL, " \n");
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
         exit(0);
     }
     
-printf("\n nsets %d\n", nSets);
+//printf("\n nsets %d\n", nSets);
 
     //go through and find duplicates
     if (nSets > 1){
@@ -78,7 +78,7 @@ printf("\n nsets %d\n", nSets);
     
     
 
-	showSet(finalS, stdout);
+//	showSet(finalS, stdout);
 	
 	
 	
@@ -86,7 +86,7 @@ printf("\n nsets %d\n", nSets);
    	while (getline(&buff, &len, fp) != -1) {
 			//printf("before strtok\n");
        	 	pch = strtok (buff, " ,\n");
-       	 	printf("PRE '%s'\n", cleanString(pch));
+       	 //	printf("PRE '%s'\n", cleanString(pch));
        	 	if (isElem(finalS, cleanString(pch))){
        	 		printf("%s\n", pch);
        	 		if(++count == 10) break;
@@ -98,11 +98,11 @@ printf("\n nsets %d\n", nSets);
         exit(0);
     }
 
-	disposeSet(finalS);
-	if(allS != NULL) disposeSet(allS);
-	for(k=0; k<nSets; k++)
-		disposeSet(s[k]);
-	free(s);
+	//disposeSet(finalS);
+	//if(allS != NULL) disposeSet(allS);
+	//for(k=0; k<nSets; k++)
+	//	disposeSet(s[k]);
+	//free(s);
 
     return 1;
     

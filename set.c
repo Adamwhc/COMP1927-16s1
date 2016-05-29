@@ -253,11 +253,13 @@ static void disposeNode(Link curr)
 static int findNode(Link list, char *str, Link *cur, Link *pre)
 {
 	Link curr = list, prev = NULL;
-	while (curr != NULL && strLT(curr->val,str)) {
+	char nstr[999];
+	strcpy(nstr, str);
+	while (curr != NULL && strLT(curr->val,nstr)) {
 		prev = curr;
 		curr = curr->next;
 	}
 	*cur = curr; *pre = prev;
-	return (curr != NULL && strEQ(str,curr->val));
+	return (curr != NULL && strEQ(nstr,curr->val));
 }
 
