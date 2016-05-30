@@ -5,11 +5,7 @@
 #include <math.h>
 #include <limits.h>
 #include "Header/set.h"
-/*
-**	TODO: Permutate the array
-**	
-**
-*/
+//	TODOne: Permutate the array
 static int usage(int);
 static int readRanks(char*, char***);
 static void permute(int *, int, int, double *, int[], char***, char**, int, int *);
@@ -17,93 +13,49 @@ static int findIndex(char **, char *, int);
 static double calcSFR(int[], int[], int, int, char ***, char **) ;
 
 int main(int argc, char *argv[]) {
-	int i, j;
-	if(!usage(argc)) return -1;
-	char **ranks = malloc((argc-1) * sizeof(char*));
-	char **rankTable[argc-1];
-	int rowSize[argc-1];
-	Set tempSet = newSet();
-
+	int i, j;								//indexing
+	if(!usage(argc)) return -1;				//checks command line args
+	char **ranks = malloc((argc-1) * sizeof(char*));	//store the name of rank file(s)
+	char **rankTable[argc-1];				//2d array to store content of rank file(s)
+	int rowSize[argc-1];					//size of each column of 'rankTable'
+	Set tempSet = newSet();					//set to find union of rankTable columns
+	
 	for (i = 0; i < (argc-1); i++) {
-		char buffer[255];
-		int len;
-		strcpy(buffer, argv[i+1]);
-		len = strlen(buffer);
-		ranks[i] = malloc(len+1);
-		strcpy(ranks[i], buffer);
-		rankTable[i] = NULL;
-		rowSize[i] = readRanks(ranks[i], &rankTable[i]);
-
-		printf("%s: ", ranks[i]);
-		for(j = 0; j < rowSize[i]; j++) {
-			printf("%s ", rankTable[i][j]);
-			insertInto(tempSet, rankTable[i][j], 0);
-		}			
-		printf("\n");
+		char buffer[255];					//buffer for string
+		int len;							//length of string
+		strcpy(buffer, argv[i+1]);			//copies argv into buffer
+		len = strlen(buffer);				//gets length of string
+		ranks[i] = malloc(len+1);			//correctly allocate size for a ranks[i] index + 1(null char)
+		strcpy(ranks[i], buffer);			//copies buffer into the array index
+		
+		rankTable[i] = NULL;				
+		rowSize[i] = readRanks(ranks[i], &rankTable[i]); //read through the file. store number of urls in rankTable[i]
+		for(j = 0; j < rowSize[i]; j++)
+			insertInto(tempSet, rankTable[i][j], 0); //insert every member of array into set to get rid of duplicates
 	}
 
-	int uniqueItems = nElems(tempSet);
-	char **elements = getElements(tempSet);
-	int pValue[uniqueItems];
-	int fpValue[uniqueItems];
-	printf("Number of Unique Items: %d\nUniques: ", uniqueItems);
+	int uniqueItems = nElems(tempSet);		//get number of unique items in set
+	char **elements = getElements(tempSet);	//array of all elements(no duplicates)
+	int pValue[uniqueItems];				//array for the P values of the elements
+	int fpValue[uniqueItems];				//final P values that gives the lowest scaled foot rule after going through all permutations 
+	//initializes array.
 	for(i = 0; i < uniqueItems; i++) {
-		printf("%s ", elements[i]);
 		pValue[i] = i;
 		fpValue[i] = 0;
 	}
-	printf("\n");
+	
 	double totalSFR = INT_MAX;
-	//find W(C, P)
-	/*printf("Calculating ScaledFootrule\n");
-	
-	for(i = 0; i < uniqueItems; i++) {
-		printf("%s: ", elements[i]);
-		for(j = 0; j < argc-1 ; j++){
-			int index = findIndex(rankTable[j], elements[i], rowSize[j]);
-			//printf("index of %s at rankTable[%d] is %d\n", elements[i], j, index);
-			if(index == 0) continue;
-			double a = (double)index/(double)rowSize[j];
-			double b = (double)(pValue[i]+1)/(double)uniqueItems;
-			double indivSFR = fabs(a-b);
-			printf("%d. %lf ", j+1, indivSFR);
-			totalSFR += indivSFR;
-		}
-		printf("\n");
-	}*/
 	permute(pValue, 0, uniqueItems, &totalSFR, rowSize, rankTable, elements, argc-1, fpValue);
-	
-	printf("Total Scaled Footrule is %lf\n", totalSFR);
-
+	printf("%lf\n", totalSFR);
+	//prints the rank in order
 	for(i = 0; i < uniqueItems; i++) {
 		for (j = 0; j < uniqueItems-1; j++)
 			if(i == fpValue[j]) break;
 		printf("%d %s\n", i, elements[j]);
 	}
-		
-
-	/*
-		int n = a.length;
-		int[] p = new int[n];  // Weight index control array initially all zeros. Of course, same size of the char array.
-		int i = 1; //Upper bound index. i.e: if string is "abc" then index i could be at "c"
-		while (i < n) {
-			if (p[i] < i) { //if the weight index is bigger or the same it means that we have already switched between these i,j (one iteration before).
-				int j = ((i % 2) == 0) ? 0 : p[i];//Lower bound index. i.e: if string is "abc" then j index will always be 0.
-				swap(a, i, j);
-				// Print current
-				p[i]++; //Adding 1 to the specific weight that relates to the char array.
-				i = 1; //if i was 2 (for example), after the swap we now need to swap for i=1
-			}
-			else { 
-				p[i] = 0;//Weight index will be zero because one iteration before, it was 1 (for example) to indicate that char array a[i] swapped.
-				i++;//i index will have the option to go forward in the char array for "longer swaps"
-			}
-		}
-	*/
-	
-	
+	disposeSet(tempSet);
+	//TODO: free arrays
 	return 0;
-
 }
 
 //usage of program
@@ -142,17 +94,12 @@ static int readRanks(char * fileName, char ***rC) {
 static void permute(int *array,int i,int length, double *totalSFR, int rowSize[], char ***rankTable, char **elements, int colSize, int *fpValue) { 
 	if (length == i){
 		double curSFR =	calcSFR(array, rowSize, length, colSize, rankTable, elements);
-		//for(j = 0; j < length; j++);
-			//printf("%d", (array)[j]); 
 		int j;
 		if(curSFR < *totalSFR) {
-			
 			*totalSFR = curSFR;
 			for (j = 0; j < length; j++) {
 				fpValue[j] = (int)(array)[j];
-				//printf("%d ", array[j]);
 			}
-				
 		}
 		return;
 	}
@@ -168,7 +115,6 @@ static void permute(int *array,int i,int length, double *totalSFR, int rowSize[]
 	}
   	return;
 }
-
 
 //static int findIndex()
 //locate the index of a string in an array, if not found return 0
