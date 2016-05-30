@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
+#include <limits.h>
 #include "Header/set.h"
 /*
 **	TODO: Permutate the array
@@ -11,8 +12,9 @@
 */
 static int usage(int);
 static int readRanks(char*, char***);
-static void permute(int *, int, int);
+static void permute(int *, int, int, double *, int[], char***, char**, int, int *);
 static int findIndex(char **, char *, int);
+static double calcSFR(int[], int[], int, int, char ***, char **) ;
 
 int main(int argc, char *argv[]) {
 	int i, j;
@@ -43,16 +45,18 @@ int main(int argc, char *argv[]) {
 	int uniqueItems = nElems(tempSet);
 	char **elements = getElements(tempSet);
 	int pValue[uniqueItems];
+	int fpValue[uniqueItems];
 	printf("Number of Unique Items: %d\nUniques: ", uniqueItems);
 	for(i = 0; i < uniqueItems; i++) {
 		printf("%s ", elements[i]);
-		pValue[uniqueItems-1-i] = i;
+		pValue[i] = i;
+		fpValue[i] = 0;
 	}
 	printf("\n");
-
+	double totalSFR = INT_MAX;
 	//find W(C, P)
-	printf("Calculating ScaledFootrule\n");
-	double totalSFR = 0;
+	/*printf("Calculating ScaledFootrule\n");
+	
 	for(i = 0; i < uniqueItems; i++) {
 		printf("%s: ", elements[i]);
 		for(j = 0; j < argc-1 ; j++){
@@ -66,12 +70,17 @@ int main(int argc, char *argv[]) {
 			totalSFR += indivSFR;
 		}
 		printf("\n");
-	}
+	}*/
+	permute(pValue, 0, uniqueItems, &totalSFR, rowSize, rankTable, elements, argc-1, fpValue);
+	
 	printf("Total Scaled Footrule is %lf\n", totalSFR);
-	
-	permute(pValue, 0, uniqueItems);
-	
-	
+
+	for(i = 0; i < uniqueItems; i++) {
+		for (j = 0; j < uniqueItems-1; j++)
+			if(i == fpValue[j]) break;
+		printf("%d %s\n", i, elements[j]);
+	}
+		
 
 	/*
 		int n = a.length;
@@ -92,7 +101,7 @@ int main(int argc, char *argv[]) {
 		}
 	*/
 	
-
+	
 	return 0;
 
 }
@@ -130,12 +139,21 @@ static int readRanks(char * fileName, char ***rC) {
 
 //static void permute()
 //find all permutation of an integer array
-static void permute(int *array,int i,int length) { 
+static void permute(int *array,int i,int length, double *totalSFR, int rowSize[], char ***rankTable, char **elements, int colSize, int *fpValue) { 
 	if (length == i){
-		int j;
-		for(j = 0; j < length; j++);
+		double curSFR =	calcSFR(array, rowSize, length, colSize, rankTable, elements);
+		//for(j = 0; j < length; j++);
 			//printf("%d", (array)[j]); 
-		//printf("\n");
+		int j;
+		if(curSFR < *totalSFR) {
+			
+			*totalSFR = curSFR;
+			for (j = 0; j < length; j++) {
+				fpValue[j] = (int)(array)[j];
+				//printf("%d ", array[j]);
+			}
+				
+		}
 		return;
 	}
 	int j = i;
@@ -143,7 +161,7 @@ static void permute(int *array,int i,int length) {
 		int temp = array[i];
 		array[i] = array[j];
 		array[j] = temp;
-		permute(array,i+1,length);
+		permute(array,i+1,length, totalSFR, rowSize, rankTable, elements, colSize, fpValue);
 		temp = array[j];
 		array[j] = array[i];
 		array[i] = temp;
@@ -160,4 +178,27 @@ static int findIndex(char **array, char *word, int length) {
 		if(strcmp(array[i], word) == 0) return i+1;
 	}
 	return 0;
+}
+
+static double calcSFR(int array[], int rowSize[], int uniqueItems, int colSize, char ***rankTable, char **elements) {
+	//printf("Calculating ScaledFootrule\n");
+	double totalSFR = 0;
+	int i;
+	int j;
+	for(i = 0; i < uniqueItems; i++) {
+		//printf("%s: ", elements[i]);
+		for(j = 0; j < colSize ; j++){
+			int index = findIndex(rankTable[j], elements[i], rowSize[j]);
+			//printf("index of %s at rankTable[%d] is %d\n", elements[i], j, index);
+			if(index == 0) continue;
+			double a = (double)index/(double)rowSize[j];
+			double b = (double)(array[i]+1)/(double)uniqueItems;
+			double indivSFR = fabs(a-b);
+			//printf("%d. %lf ", j+1, indivSFR);
+			totalSFR += indivSFR;
+		}
+		
+	}
+	//printf("curSFR = %lf\n", totalSFR);
+	return totalSFR;
 }
