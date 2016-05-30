@@ -1,11 +1,13 @@
 // queue.c ... simple Queue of Strings
 // Written by John Shepherd, September 2015
+// Taken from COMP1927 LAB8 16S1
+// No changes were made
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "Header/queue.h"
+#include "queue.h" //changed from "Header/queue.h" - Nicholas Mulianto
 
 typedef struct Node *Link;
 

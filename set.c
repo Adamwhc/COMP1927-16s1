@@ -1,11 +1,25 @@
 // set.c ... simple, inefficient Set of Strings
 // Written by John Shepherd, September 2015
+// Taken from COMP1927 LAB8 16S1
+// Comments added on 30th May 2016 by Nicholas
+// Changed the structure of the set
+// -Node now contains an array(vertex) that stores other items. (in our case, it stores associated URLs)
+// -SetRep now contains another integer(arraylen), the maximum size that a Node->vertex can reach
+// Added several helper functions
+// -insertIntoNode: inserts an item(in this case, URL strings) into the array in a node.
+// -nArraylen: returns SetRep->arraylen as integer.
+// -getElements: returns the base set as an array. Base set is the set without the added array.
+// -getArrayOfNode: returns an array of all the items in a node.
+// -indexElement: defunct
+// Made some changes to several existing functions
+// -insertInto: It now takes an extra argument of type integer. Changes SetRep->arraylen.
+// -showSet: Changed how the set is printed. It now takes another argument of type FILE, so user can specify the output (stdout or file).
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "Header/set.h"
+#include "set.h" //changed from "Header/set.h" - Nicholas Mulianto
 
 #define strEQ(s,t) (strcmp((s),(t)) == 0)
 #define strLT(s,t) (strcmp((s),(t)) < 0)
