@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
 	for(i = 0; i < uniqueItems; i++) {
 		for (j = 0; j < uniqueItems-1; j++)
 			if(i == fpValue[j]) break;
-		printf("%d %s\n", i+1, elements[j]);
+		printf("%d %s\n", i, elements[j]);
 		fpValue[j] = -1;
 	}
 	//disposeSet(tempSet);
@@ -143,11 +143,11 @@ static void permute(int *array,int i,int length, double *totalSFR, int rowSize[]
 		int i;
 		int k = 0;
 		int combinedArray[length + locked];
-		printf("%i\n", length+locked);
-		for(i = 0; i < length; i++) {
-			printf("%i ", array[i]);
-		}
-		printf("\n%i\n", length+locked);
+		//printf("%i\n", length+locked);
+		//for(i = 0; i < length; i++) {
+		//	printf("%i ", array[i]);
+		//}
+		//printf("\n%i\n", length+locked);
 		for(i = 0; i < length+locked ;i++) {
 			if(lockedValues[i] != -1 && k < locked) {
 				combinedArray[i] = lockedValues[i];
@@ -159,18 +159,16 @@ static void permute(int *array,int i,int length, double *totalSFR, int rowSize[]
 				//printf("Here %i. %i \n", i-k, array[i-k]);
 			}
 		}
-		printf("\n");
-		for(i = 0; i < length+locked ;i++) {
-			printf("%i ", combinedArray[i]);
-		}
-		printf("\n");
 		double curSFR =	calcSFR(combinedArray, rowSize, length+locked, colSize, rankTable, elements);
 		int j;
-		if(curSFR < *totalSFR) {
+		if(curSFR <= *totalSFR) {
+			printf("%lf < %lf\n", curSFR, *totalSFR);
 			*totalSFR = curSFR;
 			for (j = 0; j < length; j++) {
 				fpValue[j] = (int)(combinedArray)[j];
+				printf("%i ", combinedArray[j]);
 			}
+			printf("\n");
 		}
 		return;
 	}
@@ -216,6 +214,6 @@ static double calcSFR(int array[], int rowSize[], int uniqueItems, int colSize, 
 		}
 		
 	}
-	printf("curSFR = %lf\n", totalSFR);
+	//printf("curSFR = %lf\n", totalSFR);
 	return totalSFR;
 }

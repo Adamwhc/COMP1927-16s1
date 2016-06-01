@@ -21,6 +21,11 @@ int cmpfp (const void *a, const void *b)
     return ((((prNode)b)->pr - ((prNode)a)->pr ) > 0.0000001) ? 0 : 1;
 }
 
+int cmpfpEdge (const void *a, const void *b)
+{
+    return ((((prNode)b)->outdeg - ((prNode)a)->outdeg ) > 0) ? 0 : 1;
+}
+
 int main(int argc, char *argv[]){
     if(argc < 4){
         printf("Usage: %s <Dampening factor> <Diff Value> <Max Iterations>\n", argv[0]);
@@ -81,7 +86,7 @@ void printPRtoFile(Graph g, float *PR){
 	    new->name = strdup(vIDName(g, i));
 	    arr[i] = new;
     }
-
+    mergeSort((void*)arr, 0, nVertices(g) - 1, sizeof(prNode), cmpfpEdge);
     mergeSort((void*)arr, 0, nVertices(g) - 1, sizeof(prNode), cmpfp);
 
     //puts("\nPageRank pagerankList.txt output:");
