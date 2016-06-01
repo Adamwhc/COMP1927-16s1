@@ -7,6 +7,7 @@
 #include "queue.h"
 #include "set.h"
 #include "graph.h"
+#include "readData.h"
 
 static void readThroughIndex(FILE *, Set, int);
 static int readThroughCollection(FILE *, char***);
@@ -83,7 +84,7 @@ int main(int argc, char *argv[]) {
 	//printf("\nTotal Number of Documents: %i\nTotal Vertex Count = %i\n", urlCount, nVertices(urlGraph));
 	for (i = 0; keywords[i] != NULL; i++) {
 		int * row = getRow(urlGraph, keywords[i]);
-		int nV = nVertices(urlGraph);
+		int nV = nVertices(urlGraph)-(argc-1);
 		int j, docWithWord = 0;
 		//printf("idf(%s) ", keywords[i]);
 		for (j = 0; j < nV; j++) {
@@ -91,7 +92,7 @@ int main(int argc, char *argv[]) {
 		}
 		if (docWithWord == 0) docWithWord++;
 		idf[i] = log10((double)nV/abs(docWithWord));
-		//printf("%f", idf[i]);
+		//printf("%i/%i", nV, docWithWord);
 		//printf("\n");
 		
 		for(j = 0; j < urlCount; j++) {
@@ -204,7 +205,9 @@ static void populateGraph(Graph g, char **urlList, char **keywords, int urlCount
 		FILE *fp = fopen(urlFile, "r");
 		
 		while( fscanf(fp, "%s", buffer) == 1) {
+			cleanString(buffer);
 			strlower(buffer);
+			//printf("%s\n", buffer);
 			for (j = 0; keywords[j] != NULL; j++) {
 				if (strcmp(keywords[j], buffer) == 0) {
 					wordCount[j]++;
