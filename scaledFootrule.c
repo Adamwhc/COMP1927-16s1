@@ -4,7 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include <limits.h>
-#include "Header/set.h"
+#include "set.h"
 //	TODOne: Permutate the array
 static int usage(int);
 static int readRanks(char*, char***);

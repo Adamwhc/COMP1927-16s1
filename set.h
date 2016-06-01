@@ -21,6 +21,6 @@ void insertIntoNode(Set,char *,char *);
 int nArraylen(Set);
 char ** getElements(Set);
 char ** getArrayOfNode(Set, char*);
-//char *indexElement(Set, int);
+char *indexElement(Set, int);
 
 #endif

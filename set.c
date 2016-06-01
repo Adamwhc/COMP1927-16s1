@@ -177,6 +177,17 @@ int  nArraylen(Set s)
 	return s->arraylen;
 }
 
+char *indexElement(Set s, int n){
+	if (n > (s->nelems - 1)) return NULL;
+	int i;
+	Link temp = s->elems;
+	for(i = 0; i < n; i++){
+		temp = temp->next;
+	}
+	char *retStr = strdup(temp->val);
+	return retStr;
+}
+
 // showSet(Set)
 // - display Set (for debugging)
 void showSet(Set s, FILE *fp)

@@ -17,6 +17,7 @@ typedef struct Node {
 } Node;
 	
 typedef struct QueueRep {
+	int size;
 	Link  front;
 	Link  back;
 } QueueRep;
@@ -70,6 +71,7 @@ void enterQueue(Queue q, char *str)
 		q->back->next = new;
 		q->back = new;
 	}
+	q->size++;
 }
 
 // leaveQueue(Queue)
@@ -83,6 +85,7 @@ char *leaveQueue(Queue q)
 	if (q->front == NULL)
 		q->back = NULL;
 	free(old);
+	q->size--;
 	return str;
 }
 
@@ -110,6 +113,11 @@ void showQueue(Queue q)
 			curr = curr->next;
 		}
 	}
+}
+
+int queueSize(Queue q)
+{
+    return (q->size);
 }
 
 // Helper functions
