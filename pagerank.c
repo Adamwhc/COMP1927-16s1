@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
     Graph g = newGraph(queueSize(q));
     getGraph(g, q);
 
-    showGraph(g, 0);
+    //showGraph(g, 0);
     pageRank(g, damf, diffPR, maxIt);
 
     disposeGraph(g);
