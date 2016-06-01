@@ -1,11 +1,19 @@
 // graph.c ... Graph of strings (adjacency matrix)
 // Written by John Shepherd, September 2015
+// Taken from COMP1927 LAB8 16S1
+// Comments added on 30th May 2016 by Nicholas
+// Added several helper functions
+// -vIDName: takes in index of a vertex, returns the name of the vertex
+// -getRow:  takes in the name of a vertex, returns the array(of edges) associated with the vertex.
+// -nEdges:	 takes in index of a vertex, returns the number of edges connected to that vertex where weight > 0.
+// Made some changes to an existing function
+// -addEdge: now takes another argument(of type int). That integer is then inserted as the weight between the vertices(instead of binary weights of 1 or 0).
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "graph.h"
+#include "graph.h" //changed from "Header/graph.h" - Nicholas Mulianto
 
 #define strEQ(g,t) (strcmp((g),(t)) == 0)
 
@@ -18,7 +26,7 @@ typedef struct GraphRep {
 
 // Function signatures
 
-Graph newGraph(int);
+Graph newGraph();
 void  disposeGraph(Graph);
 int   addEdge(Graph,char *,char *, int);
 int   nVertices(Graph);
@@ -67,8 +75,8 @@ void disposeGraph(Graph g)
 	free(g->vertex);
 }
 
-// addEdge(Graph,Src,Dest)
-// - add an edge from Src to Dest
+// addEdge(Graph,Src,Dest,Weight)
+// - add an edge from Src to Dest of weight Weight
 // - returns 1 if edge successfully added
 // - returns 0 if unable to add edge
 //   (usually because nV exceeds maxV)
@@ -155,6 +163,10 @@ static int vertexID(char *str, char **names, int N)
 	return -1;
 }
 
+// char * vIDName(Graph,Int)
+// - takes index of vertex as argument
+// - returns NULL if not found
+// - returns the name of the vertex otherwise
 char * vIDName(Graph g, int i)
 {
 	if (i > g->nV-1) return NULL;
@@ -162,13 +174,20 @@ char * vIDName(Graph g, int i)
 }
 
 // getRow(Graph, char *)
-// return the row associated to the second argument
+// - takes in a string(vertex name) as one of the argument
+// - returns the row(pointer to an array) associated to that vertex 
 int * getRow(Graph g, char *str) {
 	int i;
 	for (i = 0; i < g->nV; i++)
 		if (strEQ(str,g->vertex[i])) break;
 	return (int *)g->edges[i];
 }
+
+// int * getRow(Graph, Int)
+// - takes index of vertex as argument
+// - returns 0 if vertex not found
+// - returns the number of non-zero edges connected to said vertex
+//		- ignores self links
 int nEdges(Graph g, int i)
 {
 	if (i > g->nV-1) return 0;

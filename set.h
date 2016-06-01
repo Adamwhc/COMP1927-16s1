@@ -11,14 +11,16 @@ typedef struct SetRep *Set;
 Set newSet();
 void disposeSet(Set);
 void insertInto(Set,char *,int);
-void insertIntoNode(Set,char *,char *);
 void dropFrom(Set,char *);
 int  isElem(Set,char *);
 int  nElems(Set);
-int nArraylen(Set);
 void showSet(Set, FILE *);
+
+// custom functions
+void insertIntoNode(Set,char *,char *);
+int nArraylen(Set);
 char ** getElements(Set);
 char ** getArrayOfNode(Set, char*);
-char *indexElement(Set, int);
+//char *indexElement(Set, int);
 
 #endif

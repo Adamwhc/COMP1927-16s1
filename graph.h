@@ -14,6 +14,8 @@ int   addEdge(Graph,char *,char *, int);
 int   nVertices(Graph);
 int   isConnected(Graph, char *, char *);
 void  showGraph(Graph,int);
+
+// custom functions
 char *vIDName(Graph, int);
 int * getRow(Graph, char *);
 int nEdges(Graph, int);
