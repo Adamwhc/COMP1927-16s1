@@ -38,8 +38,10 @@ void getGraph(Graph g, Queue q){
        		fscanf(fp, "%s", buff);	        //store first word after header
        	fscanf(fp, "%s", buff);	
 	while(strcmp(buff, "#end") != 0){
-		addEdge(g, curFile, buff, 0);
+		addEdge(g, curFile, buff, 1);
 		fscanf(fp, "%s", buff);
+		//printf("\tFrom: %s\n", curFile);
+		//printf("\tTo: %s\n", buff);
 	}
 	fclose(fp);
 	free(curFile);
