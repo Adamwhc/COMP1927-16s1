@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
+#include <float.h>
 #include <limits.h>
 #include "set.h"
 //	TODOne: Permutate the array
@@ -18,9 +19,9 @@ int main(int argc, char *argv[]) {
 	char **ranks = malloc((argc-1) * sizeof(char*));	//store the name of rank file(s)
 	char **rankTable[argc-1];				//2d array to store content of rank file(s)
 	int rowSize[argc-1];					//size of each column of 'rankTable'
+	int totalSize = 0;
 	Set tempSet = newSet();					//set to find union of rankTable columns
-
-
+	
 	for (i = 0; i < (argc-1); i++) {
 		char buffer[255];					//buffer for string
 		int len;							//length of string
@@ -31,77 +32,116 @@ int main(int argc, char *argv[]) {
 		
 		rankTable[i] = NULL;				
 		rowSize[i] = readRanks(ranks[i], &rankTable[i]); //read through the file. store number of urls in rankTable[i]
+		totalSize += rowSize[i];
 		for(j = 0; j < rowSize[i]; j++)
-			insertInto(tempSet, rankTable[i][j], 0); //insert every member of array into set to get rid of duplicates
+			insertInto(tempSet, rankTable[i][j], 1); //insert every member of array into set to get rid of duplicates
 	}
 
 	int uniqueItems = nElems(tempSet);		//get number of unique items in set
 	char **elements = getElements(tempSet);		//array of all elements(no duplicates)
 	int pValue[uniqueItems];			//array for the P values of the elements
 	int fpValue[uniqueItems];			//final P values that gives the lowest scaled foot rule after going through all permutations
-	int lockedValues[uniqueItems];
+	int lockedValues[uniqueItems];			
 	int lockedValues2[uniqueItems];
-	int minSize = INT_MAX;
-	int maxSize = INT_MIN;
+	int minSize = INT_MAX;				//cant get bigger than this
+	int maxSize = INT_MIN;				//cant get lower than this
 	int locked = 0;
 	//initializes array.
 	for(i = 0; i < uniqueItems; i++) {
 		pValue[i] = i;
 		fpValue[i] = 0;
 		lockedValues2[i] = -1;
-		printf("%s ", elements[i]);
 	}
 
-	//lock em up
+	//find max row size and min row size etc etc
 	for(i = 0; i < (argc-1); i++) {
-		if(rowSize[i] < minSize) minSize = rowSize[i];
-		if(rowSize[i] > maxSize) maxSize = rowSize[i];
+		if(rowSize[i] < minSize) minSize = rowSize[i];		//finding minimum array size
+		if(rowSize[i] > maxSize) maxSize = rowSize[i];		//finding maximum array size
 	}
-	
+	//IF uniqueItems == totalSize, means the intersection of all ranks is a null set.
+	//Let x be items in rank 1 and y be items in rank 2
+	//x1 y1 x2 y2 x3 y3 .... xn yn would give you the lowest scaled footrule
+	if (uniqueItems == totalSize) {
+		int k = 0;
+		for(i = 0; i < maxSize; i++) {
+			for(j = 0; j < argc-1; j++) {
+				if(i >= rowSize[j]) continue;
+				int index = findIndex(elements, rankTable[j][i], uniqueItems);
+				pValue[index-1] = k;
+				k++;
+			}
+		}
+		printf("%lf\n", calcSFR(pValue, rowSize, uniqueItems, argc-1, rankTable, elements));
+		for(i = 0; i < maxSize; i++) {
+			for(j = 0; j < argc-1; j++) {
+				if(i >= rowSize[j]) continue;
+				printf("%s\n", rankTable[j][i]);
+			}
+		}
+
+		disposeSet(tempSet);
+		for (i = 0; i < argc-1; i++) {
+			for (j = 0; j < rowSize[i]; j++)
+				free(rankTable[i][j]);
+			free(rankTable[i]);
+			free(ranks[i]);
+		}
+		free(ranks);
+		for (i = 0; i < uniqueItems; i++)
+			free(elements[i]);
+		free(elements);
+		return 0;
+	}
+	//lock em up
+	//if an item exist in the those sets and they exist in the same position, you can lock it in the P value
 	for(i = 0; i < minSize; i++) {
 		lockedValues[i] = i;
 		for(j = 1; j < (argc-1); j++) {
 			if(strcmp(rankTable[0][i], rankTable[j][i]) != 0) lockedValues[i] = -1;
 		}
-		if(lockedValues[i] != -1) {
-			printf("%s locked at %i\n", rankTable[0][i], lockedValues[i]);
+		if(lockedValues[i] != -1)
 			locked++;
-		}
 	}
-
+	
+	//re-index the lockedValues to match elements[] array. (should've done that in the beginning)
 	for(i = 0; i < minSize; i++) {
 		if(lockedValues[i] != -1) {
 			int index = findIndex(elements, rankTable[0][i], uniqueItems);
 			lockedValues2[index-1] = lockedValues[i];
-			printf("%s %s\n", elements[index-1], rankTable[0][i]);
 		}
 	}
-	for(i = 0; i < uniqueItems; i++) {
-		printf("%i ", lockedValues2[i]);
-	}
-	printf("\n");
+
 	//unlocked values
 	int upValue[uniqueItems-locked];
 	j = 0;
 	for(i = 0; i < uniqueItems; i++) {
-		if (lockedValues[i] == pValue[i]) {j++; continue; }
+		if (lockedValues[i] == pValue[i]) { j++; continue; }
 		upValue[i-j] = pValue[i];
-		printf("%i %i\n", lockedValues2[i], pValue[i]);
-		printf("%i is unlocked\n", upValue[i-j]);
 	}
 
-	double totalSFR = INT_MAX;
+	double totalSFR = DBL_MAX;
 	permute(upValue, 0, uniqueItems-locked, &totalSFR, rowSize, rankTable, elements, argc-1, fpValue, locked, lockedValues2);
 	printf("%lf\n", totalSFR);
 	//prints the rank in order
+	
 	for(i = 0; i < uniqueItems; i++) {
 		for (j = 0; j < uniqueItems-1; j++)
 			if(i == fpValue[j]) break;
 		printf("%d %s\n", i, elements[j]);
 		fpValue[j] = -1;
 	}
-	//disposeSet(tempSet);
-	//TODO: free arrays
+
+	disposeSet(tempSet);
+	for (i = 0; i < argc-1; i++) {
+		for (j = 0; j < rowSize[i]; j++)
+			free(rankTable[i][j]);
+		free(rankTable[i]);
+		free(ranks[i]);
+	}
+	free(ranks);
+	for (i = 0; i < uniqueItems; i++)
+		free(elements[i]);
+	free(elements);
 	return 0;
 }
 
@@ -126,7 +166,7 @@ static int readRanks(char * fileName, char ***rC) {
 		if(strstr(buffer, "url") != NULL) {
 			size++;									//increases count everytime scan is successful
 			len = strlen(buffer);
-			rankColumn = realloc(rankColumn, sizeof(char*)*(size));		//dynamically change size
+			rankColumn = realloc(rankColumn, sizeof(char*)*(size));			//dynamically change size
 			(rankColumn)[size-1] = malloc(len+1);					//insert url to array
 			strcpy((rankColumn)[size-1], buffer);
 		}
@@ -143,11 +183,8 @@ static void permute(int *array,int i,int length, double *totalSFR, int rowSize[]
 		int i;
 		int k = 0;
 		int combinedArray[length + locked];
-		//printf("%i\n", length+locked);
-		//for(i = 0; i < length; i++) {
-		//	printf("%i ", array[i]);
-		//}
-		//printf("\n%i\n", length+locked);
+		if(*totalSFR == 0) return;
+		//combine array of locked values with the permutated values
 		for(i = 0; i < length+locked ;i++) {
 			if(lockedValues[i] != -1 && k < locked) {
 				combinedArray[i] = lockedValues[i];
@@ -161,14 +198,14 @@ static void permute(int *array,int i,int length, double *totalSFR, int rowSize[]
 		}
 		double curSFR =	calcSFR(combinedArray, rowSize, length+locked, colSize, rankTable, elements);
 		int j;
-		if(curSFR <= *totalSFR) {
-			printf("%lf < %lf\n", curSFR, *totalSFR);
+		if(curSFR < *totalSFR) {
+			//printf("%lf < %lf\n", curSFR, *totalSFR);
 			*totalSFR = curSFR;
 			for (j = 0; j < length; j++) {
 				fpValue[j] = (int)(combinedArray)[j];
-				printf("%i ", combinedArray[j]);
+				//printf("%i ", combinedArray[j]);
 			}
-			printf("\n");
+			//printf("\n");
 		}
 		return;
 	}
