@@ -10,13 +10,16 @@
 //the page rank node structure used to sort pages by their
 //page ranks, aswell as their number of out degrees
 typedef struct prn {
-	float pr;
-	int outdeg;
-	char *name;
+	float pr;    //page rank value
+	int outdeg;  //number of out degrres
+	char *name;  //page name
 } *prNode;
 
 
+//function definition for the method that calculates page rank
 void pageRank(Graph, float, float, int);
+
+//function definition for the method that prints page rank to a file
 void printPRtoFile(Graph, float *);
 
 
@@ -73,23 +76,23 @@ int main(int argc, char *argv[]){
 void pageRank(Graph g, float damf, float diffPR, int maxIt){
 	int i, j, prOld, it=0, n=nVertices(g);
 	float sum, diff=diffPR, PR[nVertices(g)];
-	for(i=0; i<n; i++)
+	for(i=0; i<n; i++)  //assign default ranks
 		PR[i] = 1 / (float) n;
         
-     //while the exit conditions have not been met...
+	 //while the exit conditions have not been met...
 	while(it < maxIt && diff >= diffPR){
 		diff = 0;
 		it++;
 		for(i=0; i<n; i++){
 			prOld = PR[i];
 			sum = 0;
-			for(j = 0; j<n; j++){
-				if (isConnected(g, vIDName(g, j), vIDName(g, i)))
-					sum += PR[j] / nEdges(g, j);
+			for(j = 0; j<n; j++){  //for every page 
+				if (isConnected(g, vIDName(g, j), vIDName(g, i))) //if the two pages are connected
+					sum += PR[j] / nEdges(g, j);   //add to sum
 			}
 			// Google's original page rank formula in all it's glory
 			PR[i] = (1 - damf)/n + damf*sum;
-			diff += fabs(PR[i] - prOld);
+			diff += fabs(PR[i] - prOld); //add to tolerance sum
 		}
 	}
 	// given the graph and array of pageranks, print these to a file
@@ -102,7 +105,7 @@ void printPRtoFile(Graph g, float *PR){
 	//create an array of pagerank Nodes 
 	prNode arr[n];
 
-	for(i=0; i<n; i++){
+	for(i=0; i<n; i++){ //create PR nodes
 		prNode new = malloc( sizeof( prNode ) );
 		new->pr = PR[i];
 		new->outdeg = nEdges(g, i);
@@ -124,6 +127,6 @@ void printPRtoFile(Graph g, float *PR){
 			free(arr[i]->name); //free memory we don't need
 			free(arr[i]);
 		}
-		fclose(fp);
+		fclose(fp);  //close file
 	}
 }
