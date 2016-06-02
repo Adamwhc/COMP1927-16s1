@@ -61,6 +61,7 @@ Graph newGraph(int maxV)
 
 // disposeGraph(Graph)
 // - clean up memory associated with Graph
+// + added dispose of Graph itself (Glenn)
 void disposeGraph(Graph g)
 {
 	if (g == NULL) return;
@@ -73,6 +74,7 @@ void disposeGraph(Graph g)
 	}
 	free(g->edges);
 	free(g->vertex);
+	free(g);
 }
 
 // addEdge(Graph,Src,Dest,Weight)

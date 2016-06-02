@@ -1,4 +1,4 @@
-// set.c ... simple, inefficient Set of Strings
+// set.c ... 
 // Written by John Shepherd, September 2015
 // Taken from COMP1927 LAB8 16S1
 // Comments added on 30th May 2016 by Nicholas
@@ -161,7 +161,9 @@ int isElem(Set s, char *str)
 	Link curr, prev;
 	curr = malloc(sizeof(Link));
 	prev = malloc(sizeof(Link));
-	return findNode(s->elems,str,&curr,&prev);
+	int ret =  findNode(s->elems,str,&curr,&prev);
+
+	return ret;
 }
 
 // nElems(Set)
@@ -179,16 +181,6 @@ int  nArraylen(Set s)
 	return s->arraylen;
 }
 
-char *indexElement(Set s, int n){
-	if (n > (s->nelems - 1)) return NULL;
-	int i;
-	Link temp = s->elems;
-	for(i = 0; i < n; i++){
-		temp = temp->next;
-	}
-	char *retStr = strdup(temp->val);
-	return retStr;
-}
 
 // showSet(Set)
 // - display Set (for debugging)

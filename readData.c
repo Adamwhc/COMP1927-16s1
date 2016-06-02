@@ -12,7 +12,11 @@ void getCollection(Queue q){
     char buff[nameSize];
     FILE *fp;
     Set s = newSet();
-    fp = fopen("files/collection.txt", "r");
+    if((fp = fopen("files/collection.txt", "r")) == NULL){
+    	printf("FILES NOT FOUND\n");
+    	exit(0);
+    }
+    
     //printf("Adding pages to graph...\n");
     while(fscanf(fp, "%s", buff) > 0){
         //printf("\tAdded Page to Graph: %s\n", buff);
@@ -21,7 +25,7 @@ void getCollection(Queue q){
 		    insertInto(s, buff, 0);
 	    } 
     }
-    //disposeSet(s);
+    disposeSet(s);
     fclose(fp);
 }
 
