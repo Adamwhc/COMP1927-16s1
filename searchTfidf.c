@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 	printf("Usage: %s <Space separated kewords>\n", argv[0]);
 	exit(0);
     }
-    
+
     //open the collection files
     FILE *files = fopen("files/collection.txt", "r");
     char **allURLs;
@@ -102,9 +102,9 @@ int main(int argc, char *argv[]) {
 	}
 	if (docWithWord == 0) docWithWord++;
 	idf[i] = log10((double)nV/abs(docWithWord));
-	//printf("%i/%i", nV, docWithWord);
-	//printf("\n");
-
+	printf("%i/%i", nV, docWithWord);
+	printf("\n");
+	
 	for(j = 0; j < urlCount; j++) {
 	    //calculate tfidf
 	    tfidf[j] += (row[j] * idf[i]);
