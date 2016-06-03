@@ -92,8 +92,6 @@ int main(int argc, char *argv[]) {
 		}
 		if (docWithWord == 0) docWithWord++;
 		idf[i] = log10((double)nV/abs(docWithWord));
-		printf("%i/%i", nV, docWithWord);
-		printf("\n");
 		
 		for(j = 0; j < urlCount; j++) {
 			//calculate tfidf
