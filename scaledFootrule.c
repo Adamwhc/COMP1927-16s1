@@ -1,3 +1,14 @@
+
+/*
+   scaledFootrule.c
+
+   Written by Glenn & Nicholas
+
+   This file is for Part 3 of the COMP1927 assignment.
+   Given one or more files that contain a ranking position for
+   certain pages, the minimum scale distance is returned along with the
+   associated correct ordering of the pages
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -6,7 +17,7 @@
 #include <float.h>
 #include <limits.h>
 #include "set.h"
-//	TODOne: Permutate the array
+
 static int usage(int);
 static int readRanks(char*, char***);
 static void permute(int *, int, int, double *, int[], char***, char**, int, int *, int, int[]);
