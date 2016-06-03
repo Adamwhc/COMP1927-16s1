@@ -179,6 +179,7 @@ static void populateGraph(Graph g, char **urlList, char **keywords, int urlCount
 		char *urlFile;
 		int j;
 		urlFile = malloc( 6 + strlen(urlList[i]) + 4 + 1 ); // Add 1 for null terminator.
+		strcpy(urlFile, "");
 		strcat(urlFile, urlList[i]);
 		strcat(urlFile, ".txt");
 		FILE *fp = fopen(urlFile, "r");
