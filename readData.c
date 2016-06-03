@@ -25,7 +25,7 @@ void getCollection(Queue q){
     char buff[nameSize];
     FILE *fp;
     Set s = newSet(); //if we can't find the file list then leave
-    if((fp = fopen("files/collection.txt", "r")) == NULL){
+    if((fp = fopen("collection.txt", "r")) == NULL){
 	printf("FILES NOT FOUND\n");
 	exit(0);
     }
@@ -49,7 +49,7 @@ void getGraph(Graph g, Queue q){
     FILE *fp;
     while(!emptyQueue(q)){   //while there are still links left to check
 	curFile = leaveQueue(q);     //get next file
-	sprintf(filename, "files/%s.txt", curFile); 
+	sprintf(filename, "%s.txt", curFile); 
 	fp = fopen(filename, "r");
 	while(strcmp(buff, "Section-1") != 0) //check for given keyword
 	    fscanf(fp, "%s", buff);	        //store first word after header
@@ -74,7 +74,7 @@ BSTree getBSTree(BSTree t, Queue q){
     FILE *fp;
     while(!emptyQueue(q)){  //while still files left to check..
 	curFile = leaveQueue(q);
-	sprintf(filename, "files/%s.txt", curFile);  //insert the file name
+	sprintf(filename, "%s.txt", curFile);  //insert the file name
 	fp = fopen(filename, "r");
 
 	while(strcmp(buff, "Section-2") != 0)   //while we aren't at the keyword section yet

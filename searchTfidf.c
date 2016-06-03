@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
-	FILE *files = fopen("files/collection.txt", "r");
+	FILE *files = fopen("collection.txt", "r");
 	char **allURLs;
 	int i, urlCount = readThroughCollection(files, &allURLs);
 	fclose(files);	
@@ -179,7 +179,6 @@ static void populateGraph(Graph g, char **urlList, char **keywords, int urlCount
 		char *urlFile;
 		int j;
 		urlFile = malloc( 6 + strlen(urlList[i]) + 4 + 1 ); // Add 1 for null terminator.
-		strcpy(urlFile, "files/");
 		strcat(urlFile, urlList[i]);
 		strcat(urlFile, ".txt");
 		FILE *fp = fopen(urlFile, "r");
@@ -187,7 +186,6 @@ static void populateGraph(Graph g, char **urlList, char **keywords, int urlCount
 		while( fscanf(fp, "%s", buffer) == 1) {
 			cleanString(buffer);
 			strlower(buffer);
-			//printf("%s\n", buffer);
 			for (j = 0; keywords[j] != NULL; j++) {
 				if (strcmp(keywords[j], buffer) == 0) {
 					wordCount[j]++;
