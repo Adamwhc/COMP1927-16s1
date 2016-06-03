@@ -159,10 +159,7 @@ int isElem(Set s, char *str)
 {
 	assert(s != NULL);
 	Link curr, prev;
-	curr = malloc(sizeof(Link));
-	prev = malloc(sizeof(Link));
 	int ret =  findNode(s->elems,str,&curr,&prev);
-
 	return ret;
 }
 

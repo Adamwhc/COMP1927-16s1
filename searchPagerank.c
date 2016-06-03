@@ -63,9 +63,13 @@ if (nSets > 1){
 			insertInto(finalS, buff, 0);
 		//free(buff);
 	}
+	for(k = 0; k<nElems(allS); k++)
+		free(allElems[k]);
+	free(allElems);
 } else if (nSets == 1){
  disposeSet(finalS);
  finalS = allS;
+
  allS = NULL;
 } else
 {
