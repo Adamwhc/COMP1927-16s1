@@ -102,8 +102,10 @@ int main(int argc, char *argv[]) {
 	free(elements);
 	return 0;
     }
+
     //lock em up
     //if an item exist in the those sets and they exist in the same position, you can lock it in the P value
+    //for example if an item is ranked at index 3 in all of the ranks, you can lock that value in place.
     for(i = 0; i < minSize; i++) {
 	lockedValues[i] = i;
 	for(j = 1; j < (argc-1); j++) {
@@ -114,6 +116,7 @@ int main(int argc, char *argv[]) {
     }
 
     //re-index the lockedValues to match elements[] array. (should've done that in the beginning)
+    //this is done to make comparison easier.
     for(i = 0; i < minSize; i++) {
 	if(lockedValues[i] != -1) {
 	    int index = findIndex(elements, rankTable[0][i], uniqueItems);
@@ -122,6 +125,7 @@ int main(int argc, char *argv[]) {
     }
 
     //unlocked values
+    //separating unlocked values from locked values into another array.
     int upValue[uniqueItems-locked];
     j = 0;
     for(i = 0; i < uniqueItems; i++) {
@@ -141,6 +145,7 @@ int main(int argc, char *argv[]) {
 	fpValue[j] = -1;
     }
 
+    //freeing stuff up
     disposeSet(tempSet);
     for (i = 0; i < argc-1; i++) {
 	for (j = 0; j < rowSize[i]; j++)
@@ -166,6 +171,7 @@ static int usage(int i) {
 
 // static void readRanks(FILE *, Set, int);
 // Description: read through files and store the ranking in an array
+//		read through all argv
 static int readRanks(char * fileName, char ***rC) {
     int size = 0, len = 0;
     char buffer[255];
@@ -188,6 +194,9 @@ static int readRanks(char * fileName, char ***rC) {
 
 //static void permute()
 //find all permutation of an integer array
+//only permutate through unlocked array
+//and then merge unlocked array with locked array
+//then calculate scaledFootrule
 static void permute(int *array,int i,int length, double *totalSFR, int rowSize[], char ***rankTable, char **elements, int colSize, int *fpValue, int locked, int lockedValues[]) { 
     if (length == i){
 	int i;
@@ -228,7 +237,7 @@ static void permute(int *array,int i,int length, double *totalSFR, int rowSize[]
 }
 
 //static int findIndex()
-//locate the index of a string in an array, if not found return 0
+//locate the index of a string in an array + 1, if not found return 0
 static int findIndex(char **array, char *word, int length) {
     int i;
     for (i = 0; i < length; i++){
@@ -237,6 +246,8 @@ static int findIndex(char **array, char *word, int length) {
     return 0;
 }
 
+//static double calcSFR
+//calculate scaledFootrule
 static double calcSFR(int array[], int rowSize[], int uniqueItems, int colSize, char ***rankTable, char **elements) {
     double totalSFR = 0;
     int i;
