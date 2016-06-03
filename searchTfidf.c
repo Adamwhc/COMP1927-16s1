@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
 	    map[j] = map[j]&found;
 	}
 	for(j = 0; j < urlCount; j++) {
-	    temp[j] = NULL;
+	    free(temp[j]);
 	}
 	free(temp);
     }
@@ -153,7 +153,7 @@ static int readThroughCollection(FILE *fp, char ***allURLs) {
 	(*allURLs)[urlCount-1] = malloc(strlen(buffer)+1);
 	strcpy((*allURLs)[urlCount-1], buffer);
 	urlCount++;		
-    }		
+    }
     return urlCount-1;
 }
 
