@@ -6,27 +6,30 @@
 
 #define nameSize 30
 
+/*function definition for the method that cleans a string
+(cleans of trailing and leading spaces/punctuation)*/
 char *cleanString(char *);
 
+/*this function, given a queue of pages to check, will open each file
+listed in the queue and assemble a graph of all the edges (representing links
+between pages, and the nodes (pages themselves)*/
 void getCollection(Queue q){
     char buff[nameSize];
     FILE *fp;
-    Set s = newSet();
+    Set s = newSet(); //if we can't find the file list then leave
     if((fp = fopen("files/collection.txt", "r")) == NULL){
     	printf("FILES NOT FOUND\n");
     	exit(0);
     }
     
-    //printf("Adding pages to graph...\n");
     while(fscanf(fp, "%s", buff) > 0){
-        //printf("\tAdded Page to Graph: %s\n", buff);
 	    if (!isElem(s, buff)){ //ignore duplicate links
 		    enterQueue(q, buff);
 		    insertInto(s, buff, 0);
 	    } 
     }
-    disposeSet(s);
-    fclose(fp);
+    disposeSet(s);  //clear memory
+    fclose(fp);	    //dispose of pointer
 }
 
 void getGraph(Graph g, Queue q){
@@ -34,7 +37,7 @@ void getGraph(Graph g, Queue q){
     char buff[nameSize];
     char filename[nameSize];
     FILE *fp;
-    while(!emptyQueue(q)){
+    while(!emptyQueue(q)){   //while there are still links left to check
     	curFile = leaveQueue(q);
 	sprintf(filename, "files/%s.txt", curFile); 
 	fp = fopen(filename, "r");
