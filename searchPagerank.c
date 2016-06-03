@@ -51,9 +51,10 @@ int main(int argc, char *argv[]){
 
     //go through and find duplicates
 if (nSets > 1){
+	char **allElems = getElements(allS); 
 	for(k=0; k<nElems(allS); k++){
 		count = 0;
-		buff = cleanString(indexElement(allS, k));
+		buff = cleanString(allElems[k]);
 		for(j=0; j<nSets; j++){
 			if(isElem(s[j], buff))
 				count++;

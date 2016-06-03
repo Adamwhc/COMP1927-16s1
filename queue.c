@@ -48,6 +48,7 @@ Queue newQueue()
 
 // disposeQueue(Queue)
 // - clean up memory associated with Queue
+// + added dispose of q itself (Glenn)
 void disposeQueue(Queue q)
 {
 	if (q == NULL) return;
@@ -57,6 +58,7 @@ void disposeQueue(Queue q)
 		disposeNode(curr);	
 		curr = next;
 	}
+	free(q);
 }
 
 // enterQueue(Queue,Str)
