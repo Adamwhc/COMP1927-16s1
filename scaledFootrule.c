@@ -1,4 +1,3 @@
-
 /*
    scaledFootrule.c
 
@@ -200,23 +199,18 @@ static void permute(int *array,int i,int length, double *totalSFR, int rowSize[]
 	    if(lockedValues[i] != -1 && k < locked) {
 		combinedArray[i] = lockedValues[i];
 		k++;
-		//printf("Here locked %i. %i \n", i, lockedValues[i]);
 	    }
 	    else {
 		combinedArray[i] = array[i-k];
-		//printf("Here %i. %i \n", i-k, array[i-k]);
 	    }
 	}
 	double curSFR =	calcSFR(combinedArray, rowSize, length+locked, colSize, rankTable, elements);
 	int j;
 	if(curSFR < *totalSFR) {
-	    //printf("%lf < %lf\n", curSFR, *totalSFR);
 	    *totalSFR = curSFR;
 	    for (j = 0; j < length; j++) {
 		fpValue[j] = (int)(combinedArray)[j];
-		//printf("%i ", combinedArray[j]);
 	    }
-	    //printf("\n");
 	}
 	return;
     }
@@ -244,24 +238,19 @@ static int findIndex(char **array, char *word, int length) {
 }
 
 static double calcSFR(int array[], int rowSize[], int uniqueItems, int colSize, char ***rankTable, char **elements) {
-    //printf("Calculating ScaledFootrule\n");
     double totalSFR = 0;
     int i;
     int j;
     for(i = 0; i < uniqueItems; i++) {
-	//printf("%s: ", elements[i]);
 	for(j = 0; j < colSize ; j++){
 	    int index = findIndex(rankTable[j], elements[i], rowSize[j]);
-	    //printf("index of %s at rankTable[%d] is %d\n", elements[i], j, index);
 	    if(index == 0) continue;
 	    double a = (double)index/(double)rowSize[j];
 	    double b = (double)(array[i]+1)/(double)uniqueItems;
 	    double indivSFR = fabs(a-b);
-	    //printf("%d. %lf ", j+1, indivSFR);
 	    totalSFR += indivSFR;
 	}
 
     }
-    //printf("curSFR = %lf\n", totalSFR);
     return totalSFR;
 }
