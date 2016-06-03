@@ -2,6 +2,7 @@
 bin/
 gmon.out
 *.txt
+!rank*.txt
 !/files/*
 searchPagerank
 searchTfidf
