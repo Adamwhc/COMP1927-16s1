@@ -22,8 +22,8 @@
 		It's P value can be locked in.
 		This will ensure minimum scaled Footrule for that item
 
-   4 -> MAX_INT)
-   ......pls be more so we can get da marks
+   4 -> (MAX_INT)
+   
 
  */
 #include <stdlib.h>
@@ -71,8 +71,8 @@ int main(int argc, char *argv[]) {
     int fpValue[uniqueItems];			//final P values that gives the lowest scaled foot rule after going through all permutations
     int lockedValues[uniqueItems];			
     int lockedValues2[uniqueItems];
-    int minSize = INT_MAX;				//cant get bigger than this
-    int maxSize = INT_MIN;				//cant get lower than this
+    int minSize = INT_MAX;				//cant get bigger than this to store minimum column size
+    int maxSize = INT_MIN;				//cant get lower than this to store maximum column size
     int locked = 0;
     //initializes array.
     for(i = 0; i < uniqueItems; i++) {
@@ -222,6 +222,8 @@ static void permute(int *array,int i,int length, double *totalSFR, int rowSize[]
 	int combinedArray[length + locked];
 	if(*totalSFR == 0) return;
 	//combine array of locked values with the permutated values
+	//fill the array with the positions of the items in locked array`
+	//fill the array with the unlocked values in order.
 	for(i = 0; i < length+locked ;i++) {
 	    if(lockedValues[i] != -1 && k < locked) {
 		combinedArray[i] = lockedValues[i];
@@ -271,15 +273,18 @@ static double calcSFR(int array[], int rowSize[], int uniqueItems, int colSize, 
     int i;
     int j;
     for(i = 0; i < uniqueItems; i++) {
-	for(j = 0; j < colSize ; j++){
-	    int index = findIndex(rankTable[j], elements[i], rowSize[j]);
-	    if(index == 0) continue;
-	    double a = (double)index/(double)rowSize[j];
-	    double b = (double)(array[i]+1)/(double)uniqueItems;
-	    double indivSFR = fabs(a-b);
-	    totalSFR += indivSFR;
-	}
-
+		for(j = 0; j < colSize ; j++){
+			//1. find the index of an element in their respective rows/columns.
+			//	 divide that by the size of the row/column
+			//2. get the element's P value and divide it by the total number of elements
+			//3. add 1 and 2 up.
+			int index = findIndex(rankTable[j], elements[i], rowSize[j]);
+			if(index == 0) continue;
+			double a = (double)index/(double)rowSize[j];
+			double b = (double)(array[i]+1)/(double)uniqueItems;
+			double indivSFR = fabs(a-b);
+			totalSFR += indivSFR;
+		}
     }
     return totalSFR;
 }
