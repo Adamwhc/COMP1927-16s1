@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 	int printedVal = 0;
 	for (i = urlCount-1; i > 0; i--) {
 		if(map[i] == 0) {; continue;}
-		printf("%s %lf\n", allURLs[i], tfidf[i]);
+		printf("%s %.6f\n", allURLs[i], tfidf[i]);
 		printedVal++;
 		if(printedVal == 10) break;							//breaks when 10 urls are printed
 	}
