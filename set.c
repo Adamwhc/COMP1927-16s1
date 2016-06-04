@@ -101,7 +101,8 @@ void insertInto(Set s, char *str, int max)
 	prev->next = new;
     }
 }
-
+// void insertIntoNode()
+// insert a string into the array inside the node.
 void insertIntoNode(Set s, char *str, char *url) {
     Link curr, prev;
     int found = findNode(s->elems,str,&curr,&prev);
@@ -123,6 +124,9 @@ void insertIntoNode(Set s, char *str, char *url) {
 
 }
 
+//char ** getArrayOfNode()
+//copies and returns the array that is attached to the node
+//copied so if we change the strings, it doesn't affect the set.
 char ** getArrayOfNode(Set s, char *str) {
     Link curr, prev;
     int found = findNode(s->elems, str, &curr, &prev);
@@ -225,7 +229,8 @@ char ** getElements(Set s)
 }
 
 // Helper functions
-
+// static Link newNode()
+// creates a new Node. Insert string to that node and return it.
 static Link newNode(char *str, int max)
 {
     Link new = malloc(sizeof(Node));
@@ -239,7 +244,8 @@ static Link newNode(char *str, int max)
     return new;
 }
 
-
+//static void disposeNode()
+//frees up the memory space taken up by a node.
 static void disposeNode(Link curr)
 {
     assert(curr != NULL);
