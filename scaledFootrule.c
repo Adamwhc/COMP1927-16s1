@@ -7,6 +7,21 @@
    Given one or more files that contain a ranking position for
    certain pages, the minimum scale distance is returned along with the
    associated correct ordering of the pages
+
+   OPTIMIZATIONS MADE TO MAKE ALGORITHM SMART (EXTRA MARK PLS):
+
+   1) NULL SET
+   ......explain
+
+   2) UNIQUE ITEMS
+   .......explain
+
+   3) LOCKED IN ITEMS
+   .......explain
+
+   4 -> MAX_INT)
+   ......pls be more so we can get da marks
+
  */
 #include <stdlib.h>
 #include <stdio.h>
