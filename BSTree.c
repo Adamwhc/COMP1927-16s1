@@ -1,4 +1,13 @@
 // BSTree.c ... implementation of binary search tree ADT
+/*
+   This file has been edited by Glenn & Nicholas to
+   support strings and list link items for use
+   in the COMP1927 Assignment 2.
+
+   It now uses a link list which is sorted, as it's
+   main value, with a keyword as each node's identifier
+   in the BST
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -6,20 +15,22 @@
 #include <string.h>
 #include "BSTree.h"
 
+/* node for the linked list */
 typedef struct listNode *listLink;
 struct listNode {
     char *pageName;
     listLink next;
 } listNode;
 
+/* the node for the BST tree */
 typedef struct BSTNode *BSTLink;
 struct BSTNode {
-    char *word;
-    listLink page;
-    BSTLink left, right;
+    char *word;          //keyword
+    listLink page;       //linked list of pages
+    BSTLink left, right; //left right nodes
 } BSTNode;
 
-
+/* function headers */
 BSTLink newBSTNode(char *, char *);
 listLink newLinkNode(char *);
 void dropList(listLink);
@@ -38,6 +49,7 @@ BSTLink newBSTNode(char *word, char *p)
     return new;
 }
 
+//creates a new link node
 listLink newLinkNode(char *p){
     listLink new = malloc(sizeof(listNode));
     assert(new != NULL);
@@ -63,6 +75,7 @@ void dropBSTree(BSTree t)
     free(t);
 }
 
+//drop the linked list
 void dropList(listLink l)
 {
     if(l==NULL) return;
@@ -113,6 +126,9 @@ BSTree BSTreeInsert(BSTree t, char *v, char *p)
     return t;
 }
 
+//adds item to the link list in the BST tree (per node)
+//and ensure that it is sorted so that it prints
+//nicely when ./inverted is run
 void addLinkToList(BSTree t, listLink l, char *p){
     if (l == NULL)
 	t->page = newLinkNode(p);

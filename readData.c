@@ -1,6 +1,8 @@
 /*
    readData.c
 
+   Written by Glenn & Nicholas for Ass2 1927 
+
    A nice little helper file to provide
    functions to assist other sections of the
    assignment.
