@@ -1,3 +1,11 @@
+/*
+   searchTfidf.c
+
+   Written by Glenn & Nicholas
+
+   This file is for Part 2 of the COMP1927 assignment.
+   It uses the scaledFootrule algorithm to rank items from different rankings.
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -8,15 +16,6 @@
 #include "set.h"
 #include "graph.h"
 #include "readData.h"
-
-/*
-   searchTfidf.c
-
-   Written by Glenn & Nicholas
-
-   This file is for Part 2 of the COMP1927 assignment.
-   It uses the scaledFootrule algorithm to rank items from different rankings.
- */
 
 static void readThroughIndex(FILE *, Set, int);
 static int readThroughCollection(FILE *, char***);
