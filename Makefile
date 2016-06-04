@@ -2,15 +2,15 @@ CC=gcc
 CFLAGS=-Wall -Werror -gdwarf-2 -pg
 LIBS=graph.o queue.o set.o readData.o mergeSort.o BSTree.o
 
-all: 	inverted.o pagerank.o searchTfidf.o searchPagerank.o scaledFootrule.o $(LIBS)
+all: 	inverted.o pagerank.o searchTfIdf.o searchPagerank.o scaledFootrule.o $(LIBS)
 	$(CC) $(CFLAGS) -o pagerank pagerank.o $(LIBS) 
 	$(CC) $(CFLAGS) -o inverted inverted.o $(LIBS) 
-	$(CC) $(CFLAGS) -lm -o searchTfidf searchTfidf.o $(LIBS) 
+	$(CC) $(CFLAGS) -lm -o searchTfIdf searchTfIdf.o $(LIBS) 
 	$(CC) $(CFLAGS) -o searchPagerank searchPagerank.o $(LIBS) 
 	$(CC) $(CFLAGS) -o scaledFootrule scaledFootrule.o $(LIBS)
 	mkdir -p bin/ && mv *.o bin/
 	
-searchTfidf.o : searchTfidf.c
+searchTfIdf.o : searchTfIdf.c
 scaledFootrule.o : scaledFootrule.c	
 inverted.o : inverted.c
 pagerank.o : pagerank.c
@@ -23,4 +23,4 @@ readData.o: readData.c readData.h
 mergeSort.o: mergeSort.c mergeSort.h
 
 clean :
-	rm -f pagerank inverted searchPagerank scaledFootrule searchTfidf *.o core
+	rm -f pagerank inverted searchPagerank scaledFootrule searchTfIdf *.o core

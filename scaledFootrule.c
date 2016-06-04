@@ -135,13 +135,13 @@ int main(int argc, char *argv[]) {
 
     double totalSFR = DBL_MAX;
     permute(upValue, 0, uniqueItems-locked, &totalSFR, rowSize, rankTable, elements, argc-1, fpValue, locked, lockedValues2);
-    printf("%lf\n", totalSFR);
+    printf("%.6f\n", totalSFR);
     //prints the rank in order
 
     for(i = 0; i < uniqueItems; i++) {
 	for (j = 0; j < uniqueItems-1; j++)
 	    if(i == fpValue[j]) break;
-	printf("%d %s\n", i, elements[j]);
+	printf("%s\n", elements[j]);
 	fpValue[j] = -1;
     }
 
