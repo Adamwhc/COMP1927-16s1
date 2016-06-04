@@ -1,8 +1,8 @@
 /*
-  mergeSort.c
+   mergeSort.c
 
-  The mergesort helper functions to perform a mergesort
-*/
+   The mergesort helper functions to perform a mergesort
+ */
 #include <stdlib.h>
 #include "mergeSort.h"
 

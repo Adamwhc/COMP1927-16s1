@@ -16,11 +16,6 @@
 #include "queue.h"
 #include "readData.h"
 
-/*typedef struct node *vnode;
-struct node {
-    char *page;
-    vnode next;
-};*/
 
 //a function header for the printing function
 //that prints the BST in infix order to print
