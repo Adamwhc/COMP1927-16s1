@@ -3,9 +3,10 @@ bin/
 gmon.out
 *.txt
 !rank*.txt
-!/files/*
+!collection.txt
+!url*.txt
 searchPagerank
-searchTfidf
+searchTfIdf
 pagerank
 inverted
 scaledFootrule
