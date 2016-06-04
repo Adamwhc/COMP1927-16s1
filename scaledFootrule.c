@@ -11,19 +11,16 @@
    OPTIMIZATIONS MADE TO MAKE ALGORITHM SMART (EXTRA MARK PLS):
 
    1) NULL SET
-		Set with no elements.
-		The intersection of sets with no 'shared' items is a null set.
+   Set with no elements.
+   The intersection of sets with no 'shared' items is a null set.
 
    2) UNIQUE ITEMS
-		Distinct elements/items of a rank.
+   Distinct elements/items of a rank.
 
    3) LOCKED IN ITEMS
-		When an element is present in multiple ranks, and in the same position. 
-		It's P value can be locked in.
-		This will ensure minimum scaled Footrule for that item
-
-   4 -> (MAX_INT)
-   
+   When an element is present in multiple ranks, and in the same position. 
+   It's P value can be locked in.
+   This will ensure minimum scaled Footrule for that item
 
  */
 #include <stdlib.h>
@@ -76,70 +73,70 @@ int main(int argc, char *argv[]) {
     int locked = 0;
     //initializes array.
     for(i = 0; i < uniqueItems; i++) {
-		pValue[i] = i;
-		fpValue[i] = 0;
-		lockedValues2[i] = -1;
+	pValue[i] = i;
+	fpValue[i] = 0;
+	lockedValues2[i] = -1;
     }
 
     //find max row size and min row size etc etc
     for(i = 0; i < (argc-1); i++) {
-		if(rowSize[i] < minSize) minSize = rowSize[i];		//finding minimum array size
-		if(rowSize[i] > maxSize) maxSize = rowSize[i];		//finding maximum array size
+	if(rowSize[i] < minSize) minSize = rowSize[i];		//finding minimum array size
+	if(rowSize[i] > maxSize) maxSize = rowSize[i];		//finding maximum array size
     }
     //IF uniqueItems == totalSize, means the intersection of all ranks is a null set.
     //Let x be items in rank 1 and y be items in rank 2
     //x1 y1 x2 y2 x3 y3 .... xn yn would give you the lowest scaled footrule
     if (uniqueItems == totalSize) {
-		int k = 0;
-		for(i = 0; i < maxSize; i++) {
-			for(j = 0; j < argc-1; j++) {
-			if(i >= rowSize[j]) continue;
-			int index = findIndex(elements, rankTable[j][i], uniqueItems);
-			pValue[index-1] = k;
-			k++;
-			}
-		}
-		printf("%lf\n", calcSFR(pValue, rowSize, uniqueItems, argc-1, rankTable, elements));
-		for(i = 0; i < maxSize; i++) {
-			for(j = 0; j < argc-1; j++) {
-			if(i >= rowSize[j]) continue;
-			printf("%s\n", rankTable[j][i]);
-			}
-		}
+	int k = 0;
+	for(i = 0; i < maxSize; i++) {
+	    for(j = 0; j < argc-1; j++) {
+		if(i >= rowSize[j]) continue;
+		int index = findIndex(elements, rankTable[j][i], uniqueItems);
+		pValue[index-1] = k;
+		k++;
+	    }
+	}
+	printf("%lf\n", calcSFR(pValue, rowSize, uniqueItems, argc-1, rankTable, elements));
+	for(i = 0; i < maxSize; i++) {
+	    for(j = 0; j < argc-1; j++) {
+		if(i >= rowSize[j]) continue;
+		printf("%s\n", rankTable[j][i]);
+	    }
+	}
 
-		disposeSet(tempSet);
-		for (i = 0; i < argc-1; i++) {
-			for (j = 0; j < rowSize[i]; j++)
-			free(rankTable[i][j]);
-			free(rankTable[i]);
-			free(ranks[i]);
-		}
-		free(ranks);
-		for (i = 0; i < uniqueItems; i++)
-			free(elements[i]);
-		free(elements);
-		return 0;
-		}
+	disposeSet(tempSet);
+	for (i = 0; i < argc-1; i++) {
+	    for (j = 0; j < rowSize[i]; j++)
+		free(rankTable[i][j]);
+	    free(rankTable[i]);
+	    free(ranks[i]);
+	}
+	free(ranks);
+	for (i = 0; i < uniqueItems; i++)
+	    free(elements[i]);
+	free(elements);
+	return 0;
+    }
 
     //lock em up
     //if an item exist in the those sets and they exist in the same position, you can lock it in the P value
     //for example if an item is ranked at index 3 in all of the ranks, you can lock that value in place.
     for(i = 0; i < minSize; i++) {
-		lockedValues[i] = i;
-		for(j = 1; j < (argc-1); j++) {
-			if(strcmp(rankTable[0][i], rankTable[j][i]) != 0) lockedValues[i] = -1;
-		}
-		if(lockedValues[i] != -1)
-			locked++;
+	lockedValues[i] = i;
+	for(j = 1; j < (argc-1); j++) {
+	    if(strcmp(rankTable[0][i], rankTable[j][i]) != 0) lockedValues[i] = -1;
+	}
+	if(lockedValues[i] != -1)
+	    locked++;
     }
 
     //re-index the lockedValues to match elements[] array. (should've done that in the beginning)
     //this is done to make comparison easier.
     for(i = 0; i < minSize; i++) {
-		if(lockedValues[i] != -1) {
-			int index = findIndex(elements, rankTable[0][i], uniqueItems);
-			lockedValues2[index-1] = lockedValues[i];
-		}
+	if(lockedValues[i] != -1) {
+	    int index = findIndex(elements, rankTable[0][i], uniqueItems);
+	    lockedValues2[index-1] = lockedValues[i];
+	}
     }
 
     //unlocked values
@@ -147,8 +144,8 @@ int main(int argc, char *argv[]) {
     int upValue[uniqueItems-locked];
     j = 0;
     for(i = 0; i < uniqueItems; i++) {
-		if (lockedValues[i] == pValue[i]) { j++; continue; }
-		upValue[i-j] = pValue[i];
+	if (lockedValues[i] == pValue[i]) { j++; continue; }
+	upValue[i-j] = pValue[i];
     }
 
     double totalSFR = DBL_MAX;
@@ -157,23 +154,23 @@ int main(int argc, char *argv[]) {
     //prints the rank in order
 
     for(i = 0; i < uniqueItems; i++) {
-		for (j = 0; j < uniqueItems-1; j++)
-			if(i == fpValue[j]) break;
-		printf("%s\n", elements[j]);
-		fpValue[j] = -1;
+	for (j = 0; j < uniqueItems-1; j++)
+	    if(i == fpValue[j]) break;
+	printf("%s\n", elements[j]);
+	fpValue[j] = -1;
     }
 
     //freeing stuff up
     disposeSet(tempSet);
     for (i = 0; i < argc-1; i++) {
-		for (j = 0; j < rowSize[i]; j++)
-			free(rankTable[i][j]);
-		free(rankTable[i]);
-		free(ranks[i]);
+	for (j = 0; j < rowSize[i]; j++)
+	    free(rankTable[i][j]);
+	free(rankTable[i]);
+	free(ranks[i]);
     }
     free(ranks);
     for (i = 0; i < uniqueItems; i++)
-		free(elements[i]);
+	free(elements[i]);
     free(elements);
     return 0;
 }
@@ -194,6 +191,11 @@ static int readRanks(char * fileName, char ***rC) {
     int size = 0, len = 0;
     char buffer[255];
     FILE *fp = fopen(fileName, "r");
+    if(fp==NULL){
+	printf("ERROR OPENING FILE: %s\n", fileName);
+	exit(0);
+    }
+    
     char **rankColumn = malloc(sizeof(char*) * 1);
 
     while( fscanf(fp, "%s", buffer) != EOF) {
@@ -273,18 +275,18 @@ static double calcSFR(int array[], int rowSize[], int uniqueItems, int colSize, 
     int i;
     int j;
     for(i = 0; i < uniqueItems; i++) {
-		for(j = 0; j < colSize ; j++){
-			//1. find the index of an element in their respective rows/columns.
-			//	 divide that by the size of the row/column
-			//2. get the element's P value and divide it by the total number of elements
-			//3. add 1 and 2 up.
-			int index = findIndex(rankTable[j], elements[i], rowSize[j]);
-			if(index == 0) continue;
-			double a = (double)index/(double)rowSize[j];
-			double b = (double)(array[i]+1)/(double)uniqueItems;
-			double indivSFR = fabs(a-b);
-			totalSFR += indivSFR;
-		}
+	for(j = 0; j < colSize ; j++){
+	    //1. find the index of an element in their respective rows/columns.
+	    //	 divide that by the size of the row/column
+	    //2. get the element's P value and divide it by the total number of elements
+	    //3. add 1 and 2 up.
+	    int index = findIndex(rankTable[j], elements[i], rowSize[j]);
+	    if(index == 0) continue;
+	    double a = (double)index/(double)rowSize[j];
+	    double b = (double)(array[i]+1)/(double)uniqueItems;
+	    double indivSFR = fabs(a-b);
+	    totalSFR += indivSFR;
+	}
     }
     return totalSFR;
 }
