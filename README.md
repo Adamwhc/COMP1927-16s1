@@ -1,9 +1,4 @@
-
-[Source](https://www.cse.unsw.edu.au/~cs1927/16s1/ass/ass02/Ass2.html "Permalink to COMP1927 16s1 - Assignment 2")
-
-# COMP1927 16s1 - Assignment 2
-
-## COMP1927: Assignment 2
+# COMP1927 16s1 - Assignment 2 - [Source](https://www.cse.unsw.edu.au/~cs1927/16s1/ass/ass02/Ass2.html "Permalink to COMP1927 16s1 - Assignment 2")
 
 ## Simple Search Engines
 
@@ -44,12 +39,13 @@
 
 ## Admin
 
-| ----- |
-| **Marks** |  15 marks (14 marks towards total course mark)  |
-| **Group** |  This assignment is completed in **group of two** |
-| **Due** |  Fri Jun 3 23:59:59 2016. Last day to submit** this assignment is 11pm Friday 10 Jun, subject to late penalty of 0.25 mark per day off the ceiling. |
-| **Submit** |  Read instructions in the "Submission" section below, and follow the submission link.  |
-| **Late Penalty** | 0.25 mark per day off the ceiling. Last day to submit this assignment is 11pm Friday 10 June.|
+Field | Note
+ --- | ---
+ **Marks** |  15 marks (14 marks towards total course mark)  
+ **Group** |  This assignment is completed in **group of two** 
+ **Due** |  Fri Jun 3 23:59:59 2016. Last day to submit** this assignment is 11pm Friday 10 Jun, subject to late penalty of 0.25 mark per day off the ceiling. 
+ **Submit** |  Read instructions in the "Submission" section below, and follow the submission link.  
+ **Late Penalty** | 0.25 mark per day off the ceiling. Last day to submit this assignment is 11pm Friday 10 June.
 
 ## Aim
 
@@ -85,10 +81,6 @@ In Part-2: Content-based search engine, you need to calculate tf-idf values for 
 In Part-3: Hybrid search engine, you need to combine both PageRank and tf-idf values in order to rank pages. More on this later ...
 
 **Additional files:** You can submit additional supporting files, `*.c`and `*.h`, for this assignment. For example, you may implement your graph adt in files `graph.c` and `graph.h` and submit these two files along with other required files as mentioned below.
-* * *
-
-##  Sample files
-
 * * *
 
 ## Part-1: Graph structure-based Search Engine
